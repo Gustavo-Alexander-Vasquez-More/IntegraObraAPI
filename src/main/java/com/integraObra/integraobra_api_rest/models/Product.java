@@ -1,7 +1,6 @@
 package com.integraObra.integraobra_api_rest.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,7 +11,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "products")
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 public class Product {
     @Id
@@ -50,7 +50,6 @@ public class Product {
         this.tags = tags;
         this.salePrice = salePrice;
         this.rentPrice = rentPrice;
-        this.isForRent = isForRent;
         this.isForSale = isForSale;
         this.priceVisibleForRent = priceVisibleForRent;
         this.priceVisibleForSale = priceVisibleForSale;

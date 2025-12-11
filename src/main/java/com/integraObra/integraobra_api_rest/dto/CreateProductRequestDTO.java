@@ -27,6 +27,7 @@ public class CreateProductRequestDTO {
     @NotEmpty(message = "La descripción no puede estar vacía")
     private String description;
     private List<String> tags; // Puede estar vacío, es opcional
+    @DecimalMin(value = "0.0", inclusive = false, message = "El precio de venta debe ser mayor que cero")
     private BigDecimal salePrice; // Puede ser nulo si no está a la venta
     @NotNull(message = "El precio de renta no puede ser nulo")
     @DecimalMin(value = "0.0", inclusive = false, message = "El precio de renta debe ser mayor que cero")
