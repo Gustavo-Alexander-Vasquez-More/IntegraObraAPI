@@ -23,6 +23,8 @@ public class Product {
     private String sku;
     private int stock;
     private boolean available=true;
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
     private String description;
     @ElementCollection
     @CollectionTable(name = "product_tags", joinColumns = @JoinColumn(name = "product_id"))

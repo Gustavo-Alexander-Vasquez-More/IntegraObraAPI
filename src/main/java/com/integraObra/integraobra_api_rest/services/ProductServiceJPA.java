@@ -1,10 +1,15 @@
 package com.integraObra.integraobra_api_rest.services;
 
 import com.integraObra.integraobra_api_rest.dto.CreateProductRequestDTO;
+import com.integraObra.integraobra_api_rest.exceptions.NotFoundException;
 import com.integraObra.integraobra_api_rest.exceptions.ProductExistException;
 import com.integraObra.integraobra_api_rest.models.Product;
 import com.integraObra.integraobra_api_rest.repositories.ProductRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class ProductServiceJPA implements ProductService {
@@ -35,5 +40,28 @@ public class ProductServiceJPA implements ProductService {
         );
         return productRepository.save(product);
     }
+    //Metodo para obtener todos los productos
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
+    }
+    //Metodo para obtener un producto por su ID
+    public Product getProductById(Long id) {
+        return productRepository.findById(id).orElseThrow(() -> new NotFoundException("Producto no encontrado con el ID: " + id));
+    }
 
+    //Metodo para buscar productos por SKU o nombre con paginacion
+    public Page<Product> getProductsBySkuOrName(String searchTerm, Pageable pageable) {
+        // Si el término de búsqueda está vacío o es null, devolver todos los productos paginados
+        if (searchTerm == null || searchTerm.trim().isEmpty()) {
+            return productRepository.findAll(pageable);
+        }
+
+        // Buscar por SKU o nombre conteniendo el término (ignorando mayúsculas/minúsculas)
+        String trimmedSearch = searchTerm.trim();
+        return productRepository.findBySkuContainingIgnoreCaseOrNameContainingIgnoreCase(
+                trimmedSearch,
+                trimmedSearch,
+                pageable
+        );
+    }
 }
