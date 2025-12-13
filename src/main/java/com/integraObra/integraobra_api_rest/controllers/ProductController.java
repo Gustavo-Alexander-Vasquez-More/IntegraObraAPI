@@ -26,20 +26,8 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(productServiceJPA.createProduct(createProductRequestDTO));
     }
 
-    @GetMapping
-    public ResponseEntity<List<Product>> getAllProducts() {
-        return ResponseEntity.status(HttpStatus.OK).body(productServiceJPA.getAllProducts());
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable Long id){
-        return ResponseEntity.status(HttpStatus.OK).body(productServiceJPA.getProductById(id));
-    }
-
     @GetMapping("/search")
-    public ResponseEntity<Page<Product>> getProductsBySkuOrName(
-            @RequestParam String searchTerm, // Ahora es un parámetro ?searchTerm=...
-            Pageable pageable) {
-        return ResponseEntity.ok(productServiceJPA.getProductsBySkuOrName(searchTerm, pageable));
+    public ResponseEntity<Page<Product>> getProductsBySkuOrName(@RequestParam String searchTerm, String category, Pageable pageable) {
+        return ResponseEntity.ok(productServiceJPA.getProductsBySkuOrName(searchTerm, category ,pageable));
     }
 }

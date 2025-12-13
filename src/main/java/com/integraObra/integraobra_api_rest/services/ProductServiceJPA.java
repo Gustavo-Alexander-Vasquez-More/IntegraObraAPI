@@ -20,15 +20,16 @@ public class ProductServiceJPA implements ProductService {
     }
 
     //Metodo para crear un producto
+    @Override
     public Product createProduct(CreateProductRequestDTO createProductRequestDTO) {
         boolean existsBySku = productRepository.existsBySku(createProductRequestDTO.getSku());
         if (existsBySku) {
             throw new ProductExistException("No se puede crear el producto. El SKU ya existe, intente con otro o verifique si el producto ya está registrado.");
         }
         Product product = new Product(
-                createProductRequestDTO.getName(),
-                createProductRequestDTO.getCardImageUrl(),
-                createProductRequestDTO.getSku(),
+                createProductRequestDTO.getName().toUpperCase().trim(),
+                createProductRequestDTO.getCardImageUrl().trim(),
+                createProductRequestDTO.getSku().trim(),
                 createProductRequestDTO.getStock(),
                 createProductRequestDTO.getDescription(),
                 createProductRequestDTO.getTags(),
@@ -40,17 +41,10 @@ public class ProductServiceJPA implements ProductService {
         );
         return productRepository.save(product);
     }
-    //Metodo para obtener todos los productos
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
-    }
-    //Metodo para obtener un producto por su ID
-    public Product getProductById(Long id) {
-        return productRepository.findById(id).orElseThrow(() -> new NotFoundException("Producto no encontrado con el ID: " + id));
-    }
 
-    //Metodo para buscar productos por SKU o nombre con paginacion
-    public Page<Product> getProductsBySkuOrName(String searchTerm, Pageable pageable) {
+    //Metodo para la busqueda de productos y ademas permite filtrado por categoria
+    @Override
+    public Page<Product> getProductsBySkuOrName(String searchTerm, String category ,Pageable pageable) {
         // Si el término de búsqueda está vacío o es null, devolver todos los productos paginados
         if (searchTerm == null || searchTerm.trim().isEmpty()) {
             return productRepository.findAll(pageable);
@@ -64,4 +58,5 @@ public class ProductServiceJPA implements ProductService {
                 pageable
         );
     }
+
 }

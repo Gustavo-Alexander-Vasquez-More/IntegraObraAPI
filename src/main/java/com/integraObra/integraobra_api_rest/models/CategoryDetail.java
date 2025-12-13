@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "category_details")
 @Getter @Setter
-@NoArgsConstructor @AllArgsConstructor
+@NoArgsConstructor
 public class CategoryDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,5 +27,10 @@ public class CategoryDetail {
     @PrePersist
     public void prePersist() {
         creationDate = LocalDateTime.now();
+    }
+
+    public CategoryDetail(Category category, Product product) {
+        this.category = category;
+        this.product = product;
     }
 }
