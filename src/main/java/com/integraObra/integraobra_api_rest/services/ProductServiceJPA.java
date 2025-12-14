@@ -1,6 +1,7 @@
 package com.integraObra.integraobra_api_rest.services;
 
 import com.integraObra.integraobra_api_rest.dto.CreateProductRequestDTO;
+import com.integraObra.integraobra_api_rest.dto.ProductResponseDTO;
 import com.integraObra.integraobra_api_rest.exceptions.NotFoundException;
 import com.integraObra.integraobra_api_rest.exceptions.ProductExistException;
 import com.integraObra.integraobra_api_rest.models.Product;
@@ -42,21 +43,14 @@ public class ProductServiceJPA implements ProductService {
         return productRepository.save(product);
     }
 
-    //Metodo para la busqueda de productos y ademas permite filtrado por categoria
+    //Metodo para obtener todos los productos con opcion de filtrado por categorias y paginacion
     @Override
-    public Page<Product> getProductsBySkuOrName(String searchTerm, String category ,Pageable pageable) {
-        // Si el término de búsqueda está vacío o es null, devolver todos los productos paginados
-        if (searchTerm == null || searchTerm.trim().isEmpty()) {
-            return productRepository.findAll(pageable);
+    public Page<ProductResponseDTO> getPaginatedProductsByCategoryFIlterOpcional(String category, Pageable pageable){
+        if(category==null || category.isEmpty()){
+            //si la categoria esta vacia o es nula, devolvemos todos los productos paginados
+        }else{
+            //si la categoria tiene un valor, devolvemos todos los productos que pertenezcan a esa categoria paginados
         }
-
-        // Buscar por SKU o nombre conteniendo el término (ignorando mayúsculas/minúsculas)
-        String trimmedSearch = searchTerm.trim();
-        return productRepository.findBySkuContainingIgnoreCaseOrNameContainingIgnoreCase(
-                trimmedSearch,
-                trimmedSearch,
-                pageable
-        );
     }
 
 }
