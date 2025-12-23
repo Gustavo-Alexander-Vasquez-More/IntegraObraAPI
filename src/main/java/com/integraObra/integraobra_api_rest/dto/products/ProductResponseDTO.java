@@ -69,6 +69,28 @@ public class ProductResponseDTO {
         );
     }
 
+    public static ProductResponseDTO fromEntity(Product p, java.util.List<String> categories) {
+        if (p == null) return null;
+        return new ProductResponseDTO(
+                p.getId(),
+                p.getName(),
+                p.getCardImageUrl(),
+                p.getSku(),
+                p.getStock(),
+                p.isAvailable(),
+                p.getDescription(),
+                p.getTags(),
+                categories,
+                p.getSalePrice(),
+                p.getRentPrice(),
+                p.isForRent(),
+                p.isForSale(),
+                p.isPriceVisibleForRent(),
+                p.isPriceVisibleForSale(),
+                p.getCreationDate()
+        );
+    }
+
     public Long getId() { return id; }
     public String getName() { return name; }
     public String getCardImageUrl() { return cardImageUrl; }

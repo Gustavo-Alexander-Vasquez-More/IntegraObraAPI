@@ -7,6 +7,8 @@ import com.integraObra.integraobra_api_rest.exceptions.NotFoundException;
 import com.integraObra.integraobra_api_rest.exceptions.ProductExistException;
 import com.integraObra.integraobra_api_rest.models.Product;
 import com.integraObra.integraobra_api_rest.repositories.ProductRepository;
+import com.integraObra.integraobra_api_rest.repositories.CategoryDetailRepository;
+import com.integraObra.integraobra_api_rest.models.CategoryDetail;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
@@ -14,13 +16,17 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceJPA implements ProductService {
     private final ProductRepository productRepository;
+    private final CategoryDetailRepository categoryDetailRepository;
 
-    public ProductServiceJPA(ProductRepository productRepository) {
+    public ProductServiceJPA(ProductRepository productRepository, CategoryDetailRepository categoryDetailRepository) {
         this.productRepository = productRepository;
+        this.categoryDetailRepository = categoryDetailRepository;
     }
 
     //Metodo para crear un producto
@@ -70,20 +76,37 @@ public class ProductServiceJPA implements ProductService {
                 ? PageRequest.of(0, 20, Sort.by("name").ascending())
                 : pageable;
 
-        // Si no hay ni categoria ni termino, devolver todos los productos paginados
+        // Obtenemos Page<Product> en todas las ramas
+        Page<Product> productPage;
         if (cat == null && term == null) {
-            return productRepository.findAll(effectivePageable).map(ProductResponseDTO::fromEntity);
+            productPage = productRepository.findAll(effectivePageable);
+        } else if (cat == null) {
+            productPage = productRepository.findBySkuContainingIgnoreCaseOrNameContainingIgnoreCase(term, term, effectivePageable);
+        } else {
+            productPage = productRepository.searchByCategoryAndTerm(cat, term, effectivePageable);
         }
 
-        // Si no hay categoria pero hay termino, buscar por sku o name en todos los productos
-        if (cat == null) {
-            return productRepository.findBySkuContainingIgnoreCaseOrNameContainingIgnoreCase(term, term, effectivePageable)
-                    .map(ProductResponseDTO::fromEntity);
+        // Si no hay productos, devolver page mapeada vacía
+        if (productPage.isEmpty()) {
+            return productPage.map(ProductResponseDTO::fromEntity); // mantengo estructura Page pero con content vacio
         }
 
-        // Si hay categoria (con o sin termino), usar la consulta JOIN para filtrar por categoria+termino
-        Page<Product> products = productRepository.searchByCategoryAndTerm(cat, term, effectivePageable);
-        return products.map(ProductResponseDTO::fromEntity);
+        // Batch: obtener todas las categorias relacionadas a los productos de la página
+        java.util.List<Long> productIds = productPage.stream().map(Product::getId).collect(Collectors.toList());
+        java.util.List<CategoryDetail> details = categoryDetailRepository.findByProductIdIn(productIds);
+
+        // Mapear productId -> List<String> categoryNames
+        Map<Long, java.util.List<String>> categoriesByProduct = details.stream()
+                .collect(Collectors.groupingBy(cd -> cd.getProduct().getId(),
+                        Collectors.mapping(cd -> cd.getCategory().getName(), Collectors.toList())));
+
+        // Mapear Page<Product> -> Page<ProductResponseDTO> manteniendo metadata de paginación
+        Page<ProductResponseDTO> dtoPage = productPage.map(p -> {
+            java.util.List<String> cats = categoriesByProduct.getOrDefault(p.getId(), java.util.List.of());
+            return ProductResponseDTO.fromEntity(p, cats);
+        });
+
+        return dtoPage;
     }
 
     @Override
