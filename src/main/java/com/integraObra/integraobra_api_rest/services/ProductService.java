@@ -12,5 +12,6 @@ import java.util.List;
 public interface ProductService{
 
   Product createProduct(CreateProductRequestDTO createProductRequestDTO); //Metodo para crear un nuevo producto
+    List<ProductResponseDTO> getAllProducts();
   Page<ProductResponseDTO> getProductsPaginated(String searchTerm, String category, Pageable pageable); //Metodo para obtener todos los productos con opcion de filtrado por categorias y paginacion
 }

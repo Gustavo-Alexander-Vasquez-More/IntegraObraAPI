@@ -27,6 +27,11 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(productServiceJPA.createProduct(createProductRequestDTO));
     }
 
+    @GetMapping
+    public ResponseEntity<List<ProductResponseDTO>> getAllProductos(){
+        return ResponseEntity.status(HttpStatus.OK).body(productServiceJPA.getAllProducts());
+    }
+
     /**
      * Buscar productos paginados.
      * - searchTerm: opcional, buscará por sku o name si se proporciona.

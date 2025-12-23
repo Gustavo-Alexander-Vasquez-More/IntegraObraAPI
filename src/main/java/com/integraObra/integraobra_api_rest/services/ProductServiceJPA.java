@@ -9,6 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ProductServiceJPA implements ProductService {
     private final ProductRepository productRepository;
@@ -38,6 +40,18 @@ public class ProductServiceJPA implements ProductService {
                 createProductRequestDTO.getPriceVisibleForSale()
         );
         return productRepository.save(product);
+    }
+
+    @Override
+    public List<ProductResponseDTO> getAllProducts() {
+        List<Product> products = productRepository.findAll();
+        if (products.isEmpty()) {
+            throw new ProductExistException("No hay productos registrados en la base de datos.");
+        } else {
+            return products.stream()
+                    .map(ProductResponseDTO::fromEntity)
+                    .toList();
+        }
     }
 
     // Metodo para obtener productos paginados con filtrado por termino y categoria usando la consulta JPQL
