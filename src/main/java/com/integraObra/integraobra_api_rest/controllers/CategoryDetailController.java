@@ -1,8 +1,8 @@
 package com.integraObra.integraobra_api_rest.controllers;
 
-import com.integraObra.integraobra_api_rest.dto.CreateCategoryDetailRequestDTO;
+import com.integraObra.integraobra_api_rest.dto.categories.CreateCategoryDetailRequestDTO;
 import com.integraObra.integraobra_api_rest.models.CategoryDetail;
-import com.integraObra.integraobra_api_rest.services.CategoryDetailServiceJPA;
+import com.integraObra.integraobra_api_rest.services.categories.CategoryDetailServiceJPA;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

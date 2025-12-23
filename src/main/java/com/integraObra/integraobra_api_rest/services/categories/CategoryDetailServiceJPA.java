@@ -1,6 +1,6 @@
-package com.integraObra.integraobra_api_rest.services;
+package com.integraObra.integraobra_api_rest.services.categories;
 
-import com.integraObra.integraobra_api_rest.dto.CreateCategoryDetailRequestDTO;
+import com.integraObra.integraobra_api_rest.dto.categories.CreateCategoryDetailRequestDTO;
 import com.integraObra.integraobra_api_rest.exceptions.CategoryExistException;
 import com.integraObra.integraobra_api_rest.exceptions.NotFoundException;
 import com.integraObra.integraobra_api_rest.models.Category;
@@ -12,7 +12,7 @@ import com.integraObra.integraobra_api_rest.repositories.ProductRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CategoryDetailServiceJPA implements CategoryDetailService{
+public class CategoryDetailServiceJPA implements CategoryDetailService {
     private final CategoryDetailRepository categoryDetailRepository;
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;

@@ -1,6 +1,6 @@
-package com.integraObra.integraobra_api_rest.services;
+package com.integraObra.integraobra_api_rest.services.categories;
 
-import com.integraObra.integraobra_api_rest.dto.CreateCategoryDetailRequestDTO;
+import com.integraObra.integraobra_api_rest.dto.categories.CreateCategoryDetailRequestDTO;
 import com.integraObra.integraobra_api_rest.models.CategoryDetail;
 
 public interface CategoryDetailService {

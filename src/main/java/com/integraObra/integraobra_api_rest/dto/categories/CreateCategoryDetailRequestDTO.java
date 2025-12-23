@@ -1,4 +1,4 @@
-package com.integraObra.integraobra_api_rest.dto;
+package com.integraObra.integraobra_api_rest.dto.categories;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

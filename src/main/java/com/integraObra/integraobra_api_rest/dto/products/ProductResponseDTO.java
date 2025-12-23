@@ -1,4 +1,4 @@
-package com.integraObra.integraobra_api_rest.dto;
+package com.integraObra.integraobra_api_rest.dto.products;
 
 import com.integraObra.integraobra_api_rest.models.Product;
 

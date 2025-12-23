@@ -1,4 +1,4 @@
-package com.integraObra.integraobra_api_rest.dto;
+package com.integraObra.integraobra_api_rest.dto.photos;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;

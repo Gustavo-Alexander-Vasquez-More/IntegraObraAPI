@@ -1,4 +1,4 @@
-package com.integraObra.integraobra_api_rest.dto;
+package com.integraObra.integraobra_api_rest.dto.products;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
@@ -14,7 +14,7 @@ import java.util.List;
 
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
-public class CreateProductRequestDTO {
+public class UpdateRequestProductDTO {
     @NotEmpty(message = "El nombre no puede estar vacío")
     private String name;
     @NotEmpty(message = "La URL de la imageCard no puede estar vacía")
@@ -31,11 +31,12 @@ public class CreateProductRequestDTO {
     private BigDecimal salePrice; // Puede ser nulo si no está a la venta
     @DecimalMin(value = "0.0", inclusive = false, message = "El precio de renta debe ser mayor que cero")
     private BigDecimal rentPrice;
+    @NotNull(message = "isForRent no puede ser nulo")
+    private Boolean isForRent;
     @NotNull(message = "isForSale no puede ser nulo")
     private Boolean isForSale;
     @NotNull(message = "priceVisibleForRent no puede ser nulo")
     private Boolean priceVisibleForRent;
     @NotNull(message = "priceVisibleForSale no puede ser nulo")
     private Boolean priceVisibleForSale;
-
 }

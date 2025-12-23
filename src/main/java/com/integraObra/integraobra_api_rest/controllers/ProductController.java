@@ -1,9 +1,10 @@
 package com.integraObra.integraobra_api_rest.controllers;
 
-import com.integraObra.integraobra_api_rest.dto.CreateProductRequestDTO;
-import com.integraObra.integraobra_api_rest.dto.ProductResponseDTO;
+import com.integraObra.integraobra_api_rest.dto.products.CreateProductRequestDTO;
+import com.integraObra.integraobra_api_rest.dto.products.ProductResponseDTO;
+import com.integraObra.integraobra_api_rest.dto.products.UpdateRequestProductDTO;
 import com.integraObra.integraobra_api_rest.models.Product;
-import com.integraObra.integraobra_api_rest.services.ProductServiceJPA;
+import com.integraObra.integraobra_api_rest.services.products.ProductServiceJPA;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -44,5 +45,15 @@ public class ProductController {
             @RequestParam(required = false) String category,
             Pageable pageable) {
         return ResponseEntity.ok(productServiceJPA.getProductsPaginated(searchTerm, category ,pageable));
+    }
+
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<Boolean> deleteProductById(@PathVariable Long productId){
+        return ResponseEntity.status(HttpStatus.OK).body(productServiceJPA.deleteProductById(productId));
+    }
+
+    @PatchMapping("/{productId}")
+    public ResponseEntity<ProductResponseDTO> updateProduct(@Valid @RequestBody UpdateRequestProductDTO updateRequestProductDTO, @PathVariable Long productId){
+        return ResponseEntity.status(HttpStatus.OK).body(productServiceJPA.updateProduct(updateRequestProductDTO, productId));
     }
 }
