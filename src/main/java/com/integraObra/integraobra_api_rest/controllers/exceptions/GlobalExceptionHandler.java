@@ -36,7 +36,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
-    //Manejo de excepciones generales (genericos)
+    /*Manejo de excepciones generales (genericos)
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneralException(Exception ex) {
         ErrorResponse response = new ErrorResponse();
@@ -44,6 +44,6 @@ public class GlobalExceptionHandler {
         response.setMessage("An unexpected error occurred.");
         response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-    }
+    }*/
 }
 
