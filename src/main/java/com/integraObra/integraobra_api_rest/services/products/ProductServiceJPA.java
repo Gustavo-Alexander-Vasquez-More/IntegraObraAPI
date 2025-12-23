@@ -9,6 +9,8 @@ import com.integraObra.integraobra_api_rest.models.Product;
 import com.integraObra.integraobra_api_rest.repositories.ProductRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -63,19 +65,24 @@ public class ProductServiceJPA implements ProductService {
         String term = (searchTerm == null || searchTerm.trim().isEmpty()) ? null : searchTerm.trim();
         String cat = (category == null || category.trim().isEmpty()) ? null : category.trim();
 
+        // Si el pageable no está paginado (por ejemplo Pageable.unpaged()), aplicamos un pageable por defecto
+        Pageable effectivePageable = (pageable == null || pageable.isPaged() == false)
+                ? PageRequest.of(0, 20, Sort.by("name").ascending())
+                : pageable;
+
         // Si no hay ni categoria ni termino, devolver todos los productos paginados
         if (cat == null && term == null) {
-            return productRepository.findAll(pageable).map(ProductResponseDTO::fromEntity);
+            return productRepository.findAll(effectivePageable).map(ProductResponseDTO::fromEntity);
         }
 
         // Si no hay categoria pero hay termino, buscar por sku o name en todos los productos
         if (cat == null) {
-            return productRepository.findBySkuContainingIgnoreCaseOrNameContainingIgnoreCase(term, term, pageable)
+            return productRepository.findBySkuContainingIgnoreCaseOrNameContainingIgnoreCase(term, term, effectivePageable)
                     .map(ProductResponseDTO::fromEntity);
         }
 
         // Si hay categoria (con o sin termino), usar la consulta JOIN para filtrar por categoria+termino
-        Page<Product> products = productRepository.searchByCategoryAndTerm(cat, term, pageable);
+        Page<Product> products = productRepository.searchByCategoryAndTerm(cat, term, effectivePageable);
         return products.map(ProductResponseDTO::fromEntity);
     }
 
