@@ -66,7 +66,7 @@ public class ProductServiceJPA implements ProductService {
         String cat = (category == null || category.trim().isEmpty()) ? null : category.trim();
 
         // Si el pageable no está paginado (por ejemplo Pageable.unpaged()), aplicamos un pageable por defecto
-        Pageable effectivePageable = (pageable == null || pageable.isPaged() == false)
+        Pageable effectivePageable = (pageable == null || !pageable.isPaged())
                 ? PageRequest.of(0, 20, Sort.by("name").ascending())
                 : pageable;
 

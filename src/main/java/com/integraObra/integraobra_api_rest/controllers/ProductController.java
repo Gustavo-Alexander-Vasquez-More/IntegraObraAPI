@@ -29,8 +29,14 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductResponseDTO>> getAllProductos(){
-        return ResponseEntity.status(HttpStatus.OK).body(productServiceJPA.getAllProducts());
+    public ResponseEntity<Page<ProductResponseDTO>> getAllProductos(
+            @RequestParam(required = false) String searchTerm,
+            @RequestParam(required = false) String category,
+            Pageable pageable) {
+        // Delegamos siempre al método paginado del servicio. Si searchTerm y category son null,
+        // el servicio devolverá todos los productos paginados (usando el pageable o el default).
+        Page<ProductResponseDTO> page = productServiceJPA.getProductsPaginated(searchTerm, category, pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(page);
     }
 
     /**
