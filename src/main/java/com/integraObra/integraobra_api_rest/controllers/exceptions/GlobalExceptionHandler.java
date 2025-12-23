@@ -1,5 +1,6 @@
 package com.integraObra.integraobra_api_rest.controllers.exceptions;
 
+import com.integraObra.integraobra_api_rest.dto.ErrorResponse;
 import com.integraObra.integraobra_api_rest.exceptions.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +14,7 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    /**
-     * Maneja errores de validación en DTOs (@Valid).
-     * Retorna un mapa con los campos que fallaron y sus mensajes de error.
-     */
+    //Manejo de excepciones de validacion
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
@@ -30,20 +28,22 @@ public class GlobalExceptionHandler {
 
     //Manejo de excepciones NotFoundException
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<String> handleNotFoundException(NotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    public ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException ex) {
+        ErrorResponse response = new ErrorResponse();
+        response.setTitle(HttpStatus.NOT_FOUND.getReasonPhrase());
+        response.setMessage(ex.getMessage());
+        response.setStatus(HttpStatus.NOT_FOUND.value());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
-    /**
-     * Maneja errores generales del servidor.
-     * Retorna un mensaje genérico sin exponer detalles internos.
-     */
+    //Manejo de excepciones generales (genericos)
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, String>> handleGeneralException(Exception ex) {
-        Map<String, String> error = new HashMap<>();
-        error.put("error", "Error interno del servidor");
-        error.put("message", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+    public ResponseEntity<ErrorResponse> handleGeneralException(Exception ex) {
+        ErrorResponse response = new ErrorResponse();
+        response.setTitle(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
+        response.setMessage("An unexpected error occurred.");
+        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 }
 

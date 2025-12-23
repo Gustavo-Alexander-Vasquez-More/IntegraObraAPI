@@ -1,6 +1,7 @@
 package com.integraObra.integraobra_api_rest.controllers;
 
 import com.integraObra.integraobra_api_rest.dto.CreateProductRequestDTO;
+import com.integraObra.integraobra_api_rest.dto.ProductResponseDTO;
 import com.integraObra.integraobra_api_rest.models.Product;
 import com.integraObra.integraobra_api_rest.services.ProductServiceJPA;
 import jakarta.validation.Valid;
@@ -26,8 +27,17 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(productServiceJPA.createProduct(createProductRequestDTO));
     }
 
+    /**
+     * Buscar productos paginados.
+     * - searchTerm: opcional, buscará por sku o name si se proporciona.
+     * - category: opcional, filtrará por categoría si se proporciona.
+     * - Pageable se gestiona automáticamente con page/size/sort.
+     */
     @GetMapping("/search")
-    public ResponseEntity<Page<Product>> getProductsBySkuOrName(@RequestParam String searchTerm, String category, Pageable pageable) {
-        return ResponseEntity.ok(productServiceJPA.getProductsBySkuOrName(searchTerm, category ,pageable));
+    public ResponseEntity<Page<ProductResponseDTO>> getProductsPaginated(
+            @RequestParam(required = false) String searchTerm,
+            @RequestParam(required = false) String category,
+            Pageable pageable) {
+        return ResponseEntity.ok(productServiceJPA.getProductsPaginated(searchTerm, category ,pageable));
     }
 }

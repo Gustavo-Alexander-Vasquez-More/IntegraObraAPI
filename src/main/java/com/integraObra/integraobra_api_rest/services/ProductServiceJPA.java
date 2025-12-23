@@ -2,15 +2,12 @@ package com.integraObra.integraobra_api_rest.services;
 
 import com.integraObra.integraobra_api_rest.dto.CreateProductRequestDTO;
 import com.integraObra.integraobra_api_rest.dto.ProductResponseDTO;
-import com.integraObra.integraobra_api_rest.exceptions.NotFoundException;
 import com.integraObra.integraobra_api_rest.exceptions.ProductExistException;
 import com.integraObra.integraobra_api_rest.models.Product;
 import com.integraObra.integraobra_api_rest.repositories.ProductRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class ProductServiceJPA implements ProductService {
@@ -43,14 +40,26 @@ public class ProductServiceJPA implements ProductService {
         return productRepository.save(product);
     }
 
-    //Metodo para obtener todos los productos con opcion de filtrado por categorias y paginacion
+    // Metodo para obtener productos paginados con filtrado por termino y categoria usando la consulta JPQL
     @Override
-    public Page<ProductResponseDTO> getPaginatedProductsByCategoryFIlterOpcional(String category, Pageable pageable){
-        if(category==null || category.isEmpty()){
-            //si la categoria esta vacia o es nula, devolvemos todos los productos paginados
-        }else{
-            //si la categoria tiene un valor, devolvemos todos los productos que pertenezcan a esa categoria paginados
+    public Page<ProductResponseDTO> getProductsPaginated(String searchTerm, String category, Pageable pageable){
+        String term = (searchTerm == null || searchTerm.trim().isEmpty()) ? null : searchTerm.trim();
+        String cat = (category == null || category.trim().isEmpty()) ? null : category.trim();
+
+        // Si no hay ni categoria ni termino, devolver todos los productos paginados
+        if (cat == null && term == null) {
+            return productRepository.findAll(pageable).map(ProductResponseDTO::fromEntity);
         }
+
+        // Si no hay categoria pero hay termino, buscar por sku o name en todos los productos
+        if (cat == null) {
+            return productRepository.findBySkuContainingIgnoreCaseOrNameContainingIgnoreCase(term, term, pageable)
+                    .map(ProductResponseDTO::fromEntity);
+        }
+
+        // Si hay categoria (con o sin termino), usar la consulta JOIN para filtrar por categoria+termino
+        Page<Product> products = productRepository.searchByCategoryAndTerm(cat, term, pageable);
+        return products.map(ProductResponseDTO::fromEntity);
     }
 
 }
