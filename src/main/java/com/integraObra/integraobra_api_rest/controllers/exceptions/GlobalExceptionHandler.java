@@ -1,6 +1,7 @@
 package com.integraObra.integraobra_api_rest.controllers.exceptions;
 
 import com.integraObra.integraobra_api_rest.dto.ErrorResponse;
+import com.integraObra.integraobra_api_rest.exceptions.InternalErrorException;
 import com.integraObra.integraobra_api_rest.exceptions.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,14 +37,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
-    /*Manejo de excepciones generales (genericos)
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGeneralException(Exception ex) {
+    //Manejo de excepciones generales (genericos)
+    @ExceptionHandler(InternalErrorException.class)
+    public ResponseEntity<ErrorResponse> handleGeneralException(InternalErrorException ex) {
         ErrorResponse response = new ErrorResponse();
         response.setTitle(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
         response.setMessage("An unexpected error occurred.");
         response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-    }*/
+    }
 }
-
