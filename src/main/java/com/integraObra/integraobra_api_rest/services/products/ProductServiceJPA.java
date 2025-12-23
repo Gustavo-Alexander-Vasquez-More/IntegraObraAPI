@@ -9,11 +9,13 @@ import com.integraObra.integraobra_api_rest.models.Product;
 import com.integraObra.integraobra_api_rest.repositories.ProductRepository;
 import com.integraObra.integraobra_api_rest.repositories.CategoryDetailRepository;
 import com.integraObra.integraobra_api_rest.models.CategoryDetail;
+import com.integraObra.integraobra_api_rest.repositories.PhotoRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.List;
 import java.util.Map;
@@ -23,10 +25,12 @@ import java.util.stream.Collectors;
 public class ProductServiceJPA implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryDetailRepository categoryDetailRepository;
+    private final PhotoRepository photoRepository;
 
-    public ProductServiceJPA(ProductRepository productRepository, CategoryDetailRepository categoryDetailRepository) {
+    public ProductServiceJPA(ProductRepository productRepository, CategoryDetailRepository categoryDetailRepository, PhotoRepository photoRepository) {
         this.productRepository = productRepository;
         this.categoryDetailRepository = categoryDetailRepository;
+        this.photoRepository = photoRepository;
     }
 
     //Metodo para crear un producto
@@ -93,7 +97,7 @@ public class ProductServiceJPA implements ProductService {
 
         // Batch: obtener todas las categorias relacionadas a los productos de la página
         java.util.List<Long> productIds = productPage.stream().map(Product::getId).collect(Collectors.toList());
-        java.util.List<CategoryDetail> details = categoryDetailRepository.findByProductIdIn(productIds);
+        java.util.List<CategoryDetail> details = categoryDetailRepository.findByProduct_IdIn(productIds);
 
         // Mapear productId -> List<String> categoryNames
         Map<Long, java.util.List<String>> categoriesByProduct = details.stream()
@@ -101,12 +105,10 @@ public class ProductServiceJPA implements ProductService {
                         Collectors.mapping(cd -> cd.getCategory().getName(), Collectors.toList())));
 
         // Mapear Page<Product> -> Page<ProductResponseDTO> manteniendo metadata de paginación
-        Page<ProductResponseDTO> dtoPage = productPage.map(p -> {
+        return productPage.map(p -> {
             java.util.List<String> cats = categoriesByProduct.getOrDefault(p.getId(), java.util.List.of());
             return ProductResponseDTO.fromEntity(p, cats);
         });
-
-        return dtoPage;
     }
 
     @Override
@@ -115,8 +117,24 @@ public class ProductServiceJPA implements ProductService {
         if (!existsById) {
             throw new NotFoundException("No se puede eliminar el producto. El ID proporcionado no existe.");
         }
-        productRepository.deleteById(productId);
-        return true;
+        try {
+            // Borrar fotos asociadas
+            java.util.List<Long> ids = java.util.List.of(productId);
+            // usar el metodo con propiedad anidada
+            photoRepository.deleteByProduct_IdIn(ids);
+
+            // Borrar CategoryDetails asociados
+            java.util.List<CategoryDetail> details = categoryDetailRepository.findByProduct_IdIn(ids);
+            if (!details.isEmpty()) {
+                categoryDetailRepository.deleteAll(details);
+            }
+
+            // Finalmente borrar el producto
+            productRepository.deleteById(productId);
+            return true;
+        } catch (DataIntegrityViolationException ex) {
+            throw new com.integraObra.integraobra_api_rest.exceptions.DeletionConflictException("No se puede eliminar el producto por dependencias en la base de datos.");
+        }
     }
 
     @Override

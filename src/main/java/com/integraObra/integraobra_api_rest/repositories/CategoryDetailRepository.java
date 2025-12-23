@@ -15,4 +15,7 @@ public interface CategoryDetailRepository extends JpaRepository<CategoryDetail, 
 
     // Recuperar todos los CategoryDetail para una lista de product ids (batch)
     List<CategoryDetail> findByProductIdIn(List<Long> productIds);
+
+    // Variante segura usando propiedad anidada (product.id)
+    List<CategoryDetail> findByProduct_IdIn(List<Long> productIds);
 }

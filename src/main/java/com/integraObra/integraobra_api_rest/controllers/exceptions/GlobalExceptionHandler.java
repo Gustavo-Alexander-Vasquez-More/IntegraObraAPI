@@ -1,6 +1,7 @@
 package com.integraObra.integraobra_api_rest.controllers.exceptions;
 
 import com.integraObra.integraobra_api_rest.dto.ErrorResponse;
+import com.integraObra.integraobra_api_rest.exceptions.DeletionConflictException;
 import com.integraObra.integraobra_api_rest.exceptions.InternalErrorException;
 import com.integraObra.integraobra_api_rest.exceptions.NotFoundException;
 import org.springframework.http.HttpStatus;
@@ -35,6 +36,16 @@ public class GlobalExceptionHandler {
         response.setMessage(ex.getMessage());
         response.setStatus(HttpStatus.NOT_FOUND.value());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
+    // Manejo de conflictos en eliminación (dependencias)
+    @ExceptionHandler(DeletionConflictException.class)
+    public ResponseEntity<ErrorResponse> handleDeletionConflict(DeletionConflictException ex) {
+        ErrorResponse response = new ErrorResponse();
+        response.setTitle(HttpStatus.CONFLICT.getReasonPhrase());
+        response.setMessage(ex.getMessage());
+        response.setStatus(HttpStatus.CONFLICT.value());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 
     //Manejo de excepciones generales (genericos)
