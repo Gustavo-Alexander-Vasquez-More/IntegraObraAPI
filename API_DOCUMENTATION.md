@@ -281,11 +281,3 @@ curl -X POST "{{API_BASE_URL}}/api/category-details" \
 - POST /api/category-details { categoryId, productId }
 - GET /api/products/search?searchTerm=&categoryId=&page=&size=&sort=
 
----
-
-Si quieres, puedo:
-- generar un `API_DOCUMENTATION.md` más compacto para pegar en Notion
-- o exportar ejemplos Postman/Insomnia (JSON) con los endpoints principales
-- o añadir ejemplos de respuestas reales (tomadas de tu base) si me indicas rutas para probar
-
-Dime cuál de esas opciones prefieres.
