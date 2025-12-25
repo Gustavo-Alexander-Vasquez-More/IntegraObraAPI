@@ -1,10 +1,12 @@
 package com.integraObra.integraobra_api_rest.controllers;
 
 import com.integraObra.integraobra_api_rest.dto.products.CreateProductRequestDTO;
+import com.integraObra.integraobra_api_rest.dto.products.ProductCardPanelResponseDTO;
 import com.integraObra.integraobra_api_rest.dto.products.ProductResponseDTO;
 import com.integraObra.integraobra_api_rest.dto.products.UpdateRequestProductDTO;
 import com.integraObra.integraobra_api_rest.models.Product;
-import com.integraObra.integraobra_api_rest.services.products.ProductServiceJPA;
+import com.integraObra.integraobra_api_rest.services.products.ProductServiceGeneralCrudJPA;
+import com.integraObra.integraobra_api_rest.services.products.ProductServicePaginatedPanel;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,54 +14,47 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
-  private final ProductServiceJPA productServiceJPA;
+  private final ProductServiceGeneralCrudJPA productServiceGeneralCrud;
+  private final ProductServicePaginatedPanel productServicePaginatedPanel;
 
-    public ProductController(ProductServiceJPA productServiceJPA) {
-        this.productServiceJPA = productServiceJPA;
+    public ProductController(ProductServiceGeneralCrudJPA productServiceGeneralCrud, ProductServicePaginatedPanel productServicePaginatedPanel) {
+        this.productServicePaginatedPanel = productServicePaginatedPanel;
+        this.productServiceGeneralCrud = productServiceGeneralCrud;
     }
+
+    //Endpoints para CRUD general de productos
 
     @PostMapping
     public ResponseEntity<Product> createProduct(@Valid @RequestBody CreateProductRequestDTO createProductRequestDTO) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(productServiceJPA.createProduct(createProductRequestDTO));
+        return ResponseEntity.status(HttpStatus.CREATED).body(productServiceGeneralCrud.createProduct(createProductRequestDTO));
     }
 
-    @GetMapping
-    public ResponseEntity<Page<ProductResponseDTO>> getAllProductos(
-            @RequestParam(required = false) String searchTerm,
-            @RequestParam(required = false) String category,
-            Pageable pageable) {
-        // Delegamos siempre al método paginado del servicio. Si searchTerm y category son null,
-        // el servicio devolverá todos los productos paginados (usando el pageable o el default).
-        Page<ProductResponseDTO> page = productServiceJPA.getProductsPaginated(searchTerm, category, pageable);
-        return ResponseEntity.status(HttpStatus.OK).body(page);
-    }
-
-    /**
-     * Buscar productos paginados.
-     * - searchTerm: opcional, buscará por sku o name si se proporciona.
-     * - category: opcional, filtrará por categoría si se proporciona.
-     * - Pageable se gestiona automáticamente con page/size/sort.
-     */
-    @GetMapping("/search")
-    public ResponseEntity<Page<ProductResponseDTO>> getProductsPaginated(
-            @RequestParam(required = false) String searchTerm,
-            @RequestParam(required = false) String category,
-            Pageable pageable) {
-        return ResponseEntity.ok(productServiceJPA.getProductsPaginated(searchTerm, category ,pageable));
+    @GetMapping("/{productId}")
+    public ResponseEntity<ProductResponseDTO> getProductById(@PathVariable Long productId){
+        return ResponseEntity.status(HttpStatus.OK).body(productServiceGeneralCrud.getProductById(productId));
     }
 
     @DeleteMapping("/{productId}")
     public ResponseEntity<Boolean> deleteProductById(@PathVariable Long productId){
-        return ResponseEntity.status(HttpStatus.OK).body(productServiceJPA.deleteProductById(productId));
+        return ResponseEntity.status(HttpStatus.OK).body(productServiceGeneralCrud.deleteProductById(productId));
     }
 
     @PatchMapping("/{productId}")
     public ResponseEntity<ProductResponseDTO> updateProduct(@Valid @RequestBody UpdateRequestProductDTO updateRequestProductDTO, @PathVariable Long productId){
-        return ResponseEntity.status(HttpStatus.OK).body(productServiceJPA.updateProduct(updateRequestProductDTO, productId));
+        return ResponseEntity.status(HttpStatus.OK).body(productServiceGeneralCrud.updateProduct(updateRequestProductDTO, productId));
     }
+
+    //Endopoint para obtener productos paginados para el panel de gestion de productos
+    @GetMapping("/search")
+    public ResponseEntity<Page<ProductCardPanelResponseDTO>> getProductsPaginated(
+            @RequestParam(required = false) String searchTerm,
+            @RequestParam(required = false) Long categoryId,
+            Pageable pageable) {
+        return ResponseEntity.ok(productServicePaginatedPanel.getProductsPaginatedWithFilterInPanel(searchTerm, categoryId ,pageable));
+    }
+
+
 }

@@ -8,25 +8,27 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
+    // Buscar productos por nombre o SKU que contengan el término de búsqueda (ignorar mayúsculas/minúsculas)
+    Page<Product> findByNameContainingIgnoreCaseOrSkuContainingIgnoreCase(String name, String sku, Pageable pageable);
 
+    // Verificar si existe un producto con un SKU específico
     boolean existsBySku(String sku);
 
-    // Busqueda con paginacion por SKU o nombre
-    Page<Product> findBySkuContainingIgnoreCaseOrNameContainingIgnoreCase(String sku, String name, Pageable pageable);
+    // Obtener productos por categoria paginados
+    @Query("SELECT cd.product FROM CategoryDetail cd WHERE cd.category.id = :categoryId")
+    Page<Product> findAllByCategoryId(@Param("categoryId") Long categoryId, Pageable pageable);
 
-    // Consulta JPQL que busca productos por categoria (a traves de CategoryDetail) y por termino (sku o name)
-    @Query(
-        value = "select distinct p from CategoryDetail cd join cd.product p join cd.category c " +
-                "where (:category is null or lower(c.name) = lower(:category)) " +
-                "and (:term is null or (lower(p.sku) like concat('%', lower(:term), '%') or lower(p.name) like concat('%', lower(:term), '%')))",
-        countQuery = "select count(distinct p) from CategoryDetail cd join cd.product p join cd.category c " +
-                "where (:category is null or lower(c.name) = lower(:category)) " +
-                "and (:term is null or (lower(p.sku) like concat('%', lower(:term), '%') or lower(p.name) like concat('%', lower(:term), '%')) )"
-    )
-    Page<Product> searchByCategoryAndTerm(@Param("category") String category,
-                                         @Param("term") String term,
-                                         Pageable pageable);
+    //Obtener productos por categoria paginados y por termino de busqueda
+    @Query("SELECT cd.product FROM CategoryDetail cd WHERE cd.category.id = :categoryId AND " +
+            "(LOWER(cd.product.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(cd.product.sku) LIKE LOWER(CONCAT('%', :searchTerm, '%')))")
+    Page<Product> findAllByCategoryIdAndSearchTerm(@Param("categoryId") Long categoryId,
+                                               @Param("searchTerm") String searchTerm,
+                                               Pageable pageable);
+
 }

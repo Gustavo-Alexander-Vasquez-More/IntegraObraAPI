@@ -10,12 +10,4 @@ import java.util.List;
 public interface CategoryDetailRepository extends JpaRepository<CategoryDetail, Long> {
     boolean existsByCategoryIdAndProductId(Long categoryId, Long productId);
 
-    // Permite verificar si existe alguna relacion CategoryDetail con una categoria por su nombre (ignore case)
-    boolean existsByCategoryNameIgnoreCase(String categoryName);
-
-    // Recuperar todos los CategoryDetail para una lista de product ids (batch)
-    List<CategoryDetail> findByProductIdIn(List<Long> productIds);
-
-    // Variante segura usando propiedad anidada (product.id)
-    List<CategoryDetail> findByProduct_IdIn(List<Long> productIds);
 }
