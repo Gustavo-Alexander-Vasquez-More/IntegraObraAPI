@@ -1,8 +1,8 @@
 # API Documentation — integraobra-api-rest
 
 Base URL (ejemplos)
-- Producción: https://integraobraapi-production.up.railway.app
-- Local (dev): http://localhost:8080  (ajusta según tu servidor)
+- Placeholder (usar en peticiones): `{{API_BASE_URL}}`  (reemplaza por tu URL: p. ej. `http://localhost:8080` o la URL de staging que uses internamente)
+- Local (dev): `http://localhost:8080`  (ajusta según tu servidor)
 
 Formato de errores
 - Validación (400): devuelve un objeto JSON con los campos y mensajes de validación, por ejemplo:
@@ -64,7 +64,7 @@ Ejemplo de body:
 
 curl:
 ```
-curl -X POST "https://integraobraapi-production.up.railway.app/api/products" \
+curl -X POST "{{API_BASE_URL}}/api/products" \
   -H "Accept: application/json" -H "Content-Type: application/json" \
   -d '<JSON body aquí>'
 ```
@@ -78,7 +78,7 @@ curl -X POST "https://integraobraapi-production.up.railway.app/api/products" \
 
 Ejemplo:
 ```
-curl -X GET "https://integraobraapi-production.up.railway.app/api/products/123" -H "Accept: application/json"
+curl -X GET "{{API_BASE_URL}}/api/products/123" -H "Accept: application/json"
 ```
 
 ---
@@ -93,7 +93,7 @@ curl -X GET "https://integraobraapi-production.up.railway.app/api/products/123" 
 
 Ejemplo:
 ```
-curl -X DELETE "https://integraobraapi-production.up.railway.app/api/products/2" -H "Accept: application/json"
+curl -X DELETE "{{API_BASE_URL}}/api/products/2" -H "Accept: application/json"
 ```
 
 ---
@@ -117,7 +117,7 @@ Ejemplo (solo cambiar nombre y rentPrice):
 
 curl:
 ```
-curl -X PATCH "https://integraobraapi-production.up.railway.app/api/products/123" \
+curl -X PATCH "{{API_BASE_URL}}/api/products/123" \
   -H "Accept: application/json" -H "Content-Type: application/json" \
   -d '{"name":"NUEVO NOMBRE"}'
 ```
@@ -138,15 +138,15 @@ Comportamiento:
 - Si `searchTerm` y `categoryId` son omitidos → devuelve todos los productos paginados.
 - Si solo `searchTerm` → filtra por `sku` o `name` (ignore case).
 - Si solo `categoryId` → devuelve productos asociados a esa categoría.
-- Si ambos → devuelve productos de la categoría que además cumplen el `searchTerm` (si la implementación actual filtra en memoria puede cargar más datos; idealmente el repo tiene consulta que lo haga en BD).
+- Si ambos → devuelve productos de la categoría que además cumplen el `searchTerm`.
 
-Ejemplo:
+Ejemplos:
 ```
-curl -X GET "https://integraobraapi-production.up.railway.app/api/products/search?page=0&size=20&sort=name,asc" -H "Accept: application/json"
+curl -X GET "{{API_BASE_URL}}/api/products/search?page=0&size=20&sort=name,asc" -H "Accept: application/json"
 
-curl -X GET "https://integraobraapi-production.up.railway.app/api/products/search?page=0&size=20&searchTerm=martillo" -H "Accept: application/json"
+curl -X GET "{{API_BASE_URL}}/api/products/search?page=0&size=20&searchTerm=martillo" -H "Accept: application/json"
 
-curl -X GET "https://integraobraapi-production.up.railway.app/api/products/search?page=0&size=20&categoryId=3&searchTerm=martillo" -H "Accept: application/json"
+curl -X GET "{{API_BASE_URL}}/api/products/search?page=0&size=20&categoryId=3&searchTerm=martillo" -H "Accept: application/json"
 ```
 
 Respuesta: objeto `Page` con `content` (lista de `ProductCardPanelResponseDTO`), `totalElements`, `totalPages`, `number`, `size`, etc.
@@ -172,7 +172,7 @@ Ejemplo:
 
 curl:
 ```
-curl -X POST "https://integraobraapi-production.up.railway.app/api/categories" \
+curl -X POST "{{API_BASE_URL}}/api/categories" \
   -H "Accept: application/json" -H "Content-Type: application/json" \
   -d '{"name":"HERRAMIENTAS"}'
 ```
@@ -189,7 +189,7 @@ curl -X POST "https://integraobraapi-production.up.railway.app/api/categories" \
 
 curl:
 ```
-curl -X DELETE "https://integraobraapi-production.up.railway.app/api/categories/2" -H "Accept: application/json"
+curl -X DELETE "{{API_BASE_URL}}/api/categories/2" -H "Accept: application/json"
 ```
 
 ---
@@ -201,7 +201,7 @@ curl -X DELETE "https://integraobraapi-production.up.railway.app/api/categories/
 
 curl:
 ```
-curl -X GET "https://integraobraapi-production.up.railway.app/api/categories" -H "Accept: application/json"
+curl -X GET "{{API_BASE_URL}}/api/categories" -H "Accept: application/json"
 ```
 
 ---
@@ -218,7 +218,7 @@ Ejemplo:
 
 curl:
 ```
-curl -X PUT "https://integraobraapi-production.up.railway.app/api/categories/2" \
+curl -X PUT "{{API_BASE_URL}}/api/categories/2" \
   -H "Accept: application/json" -H "Content-Type: application/json" \
   -d '{"name":"HERRAMIENTAS Y ACCESORIOS"}'
 ```
@@ -244,7 +244,7 @@ Ejemplo:
 
 curl:
 ```
-curl -X POST "https://integraobraapi-production.up.railway.app/api/category-details" \
+curl -X POST "{{API_BASE_URL}}/api/category-details" \
   -H "Accept: application/json" -H "Content-Type: application/json" \
   -d '{"categoryId":2,"productId":1}'
 ```
