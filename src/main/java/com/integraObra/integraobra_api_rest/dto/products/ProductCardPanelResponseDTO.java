@@ -8,6 +8,7 @@ import lombok.Setter;
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 public class ProductCardPanelResponseDTO {
+    private Long id;
     private String name;
     private String cardImageUrl;
     private String sku;
@@ -15,6 +16,7 @@ public class ProductCardPanelResponseDTO {
 
     public static ProductCardPanelResponseDTO fromEntity(com.integraObra.integraobra_api_rest.models.Product product) {
         return new ProductCardPanelResponseDTO(
+                product.getId(),
                 product.getName(),
                 product.getCardImageUrl(),
                 product.getSku(),
