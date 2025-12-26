@@ -20,12 +20,6 @@ public interface CategoryDetailRepository extends JpaRepository<CategoryDetail, 
     @Query("delete from CategoryDetail  cd where cd.product.id = :productId")
     void deleteByProductId(Long productId);
 
-    //OBTENER DETALLES DE CATEGORIA POR ID DE PRODUCTO
-    List<CategoryDetail> findAllByProductId(Long productId);
-
-    //OBTENER DETALLES DE CATEGORIA POR ID DE CATEGORIA
-    List<CategoryDetail> findAllByCategoryId(Long categoryId);
-
     // JPQL para obtener triples (productId, categoryDetailId, categoryName) para un conjunto de productIds
     @Query("SELECT cd.product.id, cd.id, cd.category.name FROM CategoryDetail cd WHERE cd.product.id IN :productIds")
     List<Object[]> findProductIdAndCategoryDetailIdAndCategoryNameByProductIds(@Param("productIds") List<Long> productIds);

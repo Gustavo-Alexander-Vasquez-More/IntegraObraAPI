@@ -7,8 +7,6 @@ import java.util.List;
 
 public interface CategoryDetailService {
     CategoryDetail createCategoryDetail(CreateCategoryDetailRequestDTO createCategoryDetailRequestDTO);
-    //Metodo para obtener todos los detalles de categoria por id de Categoria
-    List<CategoryDetail> findAllByCategoryId(Long categoryId);
-    //Metodo para obtener todos los detalles de categoria por id de Producto
-    List<CategoryDetail> findAllByProductId(Long productId);
+
+    boolean deleteCategoryDetail(Long id);
 }

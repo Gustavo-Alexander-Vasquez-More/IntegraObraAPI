@@ -19,4 +19,10 @@ public class CategoryDetailController {
     public ResponseEntity<CategoryDetail> createCategoryDetail(@Valid @RequestBody CreateCategoryDetailRequestDTO createCategoryDetailRequestDTO) {
         return ResponseEntity.status(201).body(categoryDetailServiceJPA.createCategoryDetail(createCategoryDetailRequestDTO));
     }
+
+    @DeleteMapping("/${id}")
+    public ResponseEntity<Boolean> deleteCategoryDetail(@PathVariable Long id) {
+        return ResponseEntity.ok(categoryDetailServiceJPA.deleteCategoryDetail(id));
+    }
+
 }

@@ -54,13 +54,16 @@ public class CategoryDetailServiceJPA implements CategoryDetailService {
         return categoryDetailRepository.save(categoryDetail);
     }
 
-    //Metodo para obtener todos los detalles de categoria por id de Categoria
-    public List<CategoryDetail> findAllByCategoryId(Long categoryId) {
-        return categoryDetailRepository.findAllByCategoryId(categoryId);
+    //ELIMINAR DETALLE DE CATEGORIA POR ID
+    @Override
+    public boolean deleteCategoryDetail(Long id) {
+        boolean response=categoryDetailRepository.existsById(id);
+        if(!response){
+            throw new NotFoundException( "El detalle de categoría no existe. No se puede eliminar un detalle de categoría inexistente.");
+        }else{
+            categoryDetailRepository.deleteById((id));
+            return true;
+        }
     }
 
-    //Metodo para obtener todos los detalles de categoria por id de Producto
-    public List<CategoryDetail> findAllByProductId(Long productId) {
-        return categoryDetailRepository.findAllByProductId(productId);
-    }
 }
