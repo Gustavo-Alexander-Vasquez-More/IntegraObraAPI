@@ -22,13 +22,10 @@ public class CategoryDetailController {
         return ResponseEntity.status(201).body(categoryDetailServiceJPA.createCategoryDetail(createCategoryDetailRequestDTO));
     }
 
-    @GetMapping("/by-category")
-    public ResponseEntity<List<CategoryDetail>> getCategoryDetailByCategoryId(@RequestParam Long categoryId) {
-        return ResponseEntity.ok().body(categoryDetailServiceJPA.findAllByCategoryId(categoryId));
-    }
-
-    @GetMapping("/by-product")
-    public ResponseEntity<List<CategoryDetail>> getCategoryDetailByProductId(@RequestParam Long productId) {
-        return ResponseEntity.ok().body(categoryDetailServiceJPA.findAllByProductId(productId));
+    // GET /api/category-details?productId=123 -> devuelve lista de nombres de categorias del producto
+    @GetMapping(params = "productId")
+    public ResponseEntity<List<String>> getCategoryNamesByProductId(@RequestParam Long productId) {
+        List<String> names = categoryDetailServiceJPA.findCategoryNamesByProductId(productId);
+        return ResponseEntity.ok(names);
     }
 }

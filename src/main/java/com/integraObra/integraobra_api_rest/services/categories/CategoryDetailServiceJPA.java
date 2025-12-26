@@ -63,4 +63,10 @@ public class CategoryDetailServiceJPA implements CategoryDetailService {
     public List<CategoryDetail> findAllByProductId(Long productId) {
         return categoryDetailRepository.findAllByProductId(productId);
     }
+
+    // Metodo para obtener solo los nombres de las categorias asociadas a un producto
+    public List<String> findCategoryNamesByProductId(Long productId) {
+        List<String> names = categoryDetailRepository.findCategoryNamesByProductId(productId);
+        return names;
+    }
 }
