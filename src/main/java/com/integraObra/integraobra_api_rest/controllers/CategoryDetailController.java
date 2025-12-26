@@ -20,9 +20,8 @@ public class CategoryDetailController {
         return ResponseEntity.status(201).body(categoryDetailServiceJPA.createCategoryDetail(createCategoryDetailRequestDTO));
     }
 
-    @DeleteMapping("/${id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> deleteCategoryDetail(@PathVariable Long id) {
         return ResponseEntity.ok(categoryDetailServiceJPA.deleteCategoryDetail(id));
     }
-
 }
