@@ -32,8 +32,9 @@ public class ProductResponseDTO {
         dto.setStock(product.getStock());
         dto.setDescription(product.getDescription());
         dto.setTags(product.getTags());
-        dto.setSalePrice(product.getSalePrice().doubleValue());
-        dto.setRentPrice(product.getRentPrice().doubleValue());
+        // Manejar posibles nulls en los BigDecimal para evitar NullPointerException
+        dto.setSalePrice(product.getSalePrice() != null ? product.getSalePrice().doubleValue() : null);
+        dto.setRentPrice(product.getRentPrice() != null ? product.getRentPrice().doubleValue() : null);
         dto.setIsForSale(product.isForSale());
         dto.setIsForRent(product.isForRent());
         dto.setPriceVisibleForRent(product.isPriceVisibleForRent());
