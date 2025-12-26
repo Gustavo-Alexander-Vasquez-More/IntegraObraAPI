@@ -7,6 +7,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/category-details")
 public class CategoryDetailController {
@@ -21,12 +23,12 @@ public class CategoryDetailController {
     }
 
     @GetMapping("/by-category")
-    public ResponseEntity<CategoryDetail> getCategoryDetailByCategoryId(@RequestParam Long categoryId) {
-        return ResponseEntity.ok().body(categoryDetailServiceJPA.findAllByCategoryId(categoryId).get(0));
+    public ResponseEntity<List<CategoryDetail>> getCategoryDetailByCategoryId(@RequestParam Long categoryId) {
+        return ResponseEntity.ok().body(categoryDetailServiceJPA.findAllByCategoryId(categoryId));
     }
 
     @GetMapping("/by-product")
-    public ResponseEntity<CategoryDetail> getCategoryDetailByProductId(@RequestParam Long productId) {
-        return ResponseEntity.ok().body(categoryDetailServiceJPA.findAllByProductId(productId).get(0));
+    public ResponseEntity<List<CategoryDetail>> getCategoryDetailByProductId(@RequestParam Long productId) {
+        return ResponseEntity.ok().body(categoryDetailServiceJPA.findAllByProductId(productId));
     }
 }
