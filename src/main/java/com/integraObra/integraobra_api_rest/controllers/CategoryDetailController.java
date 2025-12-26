@@ -7,8 +7,6 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/category-details")
 public class CategoryDetailController {
@@ -20,12 +18,5 @@ public class CategoryDetailController {
     @PostMapping
     public ResponseEntity<CategoryDetail> createCategoryDetail(@Valid @RequestBody CreateCategoryDetailRequestDTO createCategoryDetailRequestDTO) {
         return ResponseEntity.status(201).body(categoryDetailServiceJPA.createCategoryDetail(createCategoryDetailRequestDTO));
-    }
-
-    // GET /api/category-details?productId=123 -> devuelve lista de nombres de categorias del producto
-    @GetMapping(params = "productId")
-    public ResponseEntity<List<String>> getCategoryNamesByProductId(@RequestParam Long productId) {
-        List<String> names = categoryDetailServiceJPA.findCategoryNamesByProductId(productId);
-        return ResponseEntity.ok(names);
     }
 }

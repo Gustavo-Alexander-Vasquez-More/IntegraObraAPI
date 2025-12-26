@@ -23,13 +23,11 @@ public interface CategoryDetailRepository extends JpaRepository<CategoryDetail, 
     //OBTENER DETALLES DE CATEGORIA POR ID DE PRODUCTO
     List<CategoryDetail> findAllByProductId(Long productId);
 
-    // JPQL para obtener pares (productId, categoryName) para un conjunto de productIds
-    @Query("SELECT cd.product.id, cd.category.name FROM CategoryDetail cd WHERE cd.product.id IN :productIds")
-    List<Object[]> findProductIdsAndCategoryNamesByProductIds(@Param("productIds") List<Long> productIds);
-
-    // JPQL para obtener solo los nombres de las categorias asociadas a un producto
-    @Query("SELECT DISTINCT cd.category.name FROM CategoryDetail cd WHERE cd.product.id = :productId")
-    List<String> findCategoryNamesByProductId(@Param("productId") Long productId);
-
+    //OBTENER DETALLES DE CATEGORIA POR ID DE CATEGORIA
     List<CategoryDetail> findAllByCategoryId(Long categoryId);
+
+    // JPQL para obtener triples (productId, categoryDetailId, categoryName) para un conjunto de productIds
+    @Query("SELECT cd.product.id, cd.id, cd.category.name FROM CategoryDetail cd WHERE cd.product.id IN :productIds")
+    List<Object[]> findProductIdAndCategoryDetailIdAndCategoryNameByProductIds(@Param("productIds") List<Long> productIds);
+
 }
