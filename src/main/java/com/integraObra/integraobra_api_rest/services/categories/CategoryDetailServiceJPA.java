@@ -11,6 +11,8 @@ import com.integraObra.integraobra_api_rest.repositories.CategoryRepository;
 import com.integraObra.integraobra_api_rest.repositories.ProductRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CategoryDetailServiceJPA implements CategoryDetailService {
     private final CategoryDetailRepository categoryDetailRepository;
@@ -26,7 +28,6 @@ public class CategoryDetailServiceJPA implements CategoryDetailService {
     }
 
     //Metodo para crear un detalle de categoria para un producto dado
-    @Override
     public CategoryDetail createCategoryDetail(CreateCategoryDetailRequestDTO createCategoryDetailRequestDTO) {
        //primero verificaremos si el detalle de categoria ya existe para el producto dado
         boolean exists = categoryDetailRepository.existsByCategoryIdAndProductId(
@@ -51,5 +52,15 @@ public class CategoryDetailServiceJPA implements CategoryDetailService {
                 product
         );
         return categoryDetailRepository.save(categoryDetail);
+    }
+
+    //Metodo para obtener todos los detalles de categoria por id de Categoria
+    public List<CategoryDetail> findAllByCategoryId(Long categoryId) {
+        return categoryDetailRepository.findAllByCategoryId(categoryId);
+    }
+
+    //Metodo para obtener todos los detalles de categoria por id de Producto
+    public List<CategoryDetail> findAllByProductId(Long productId) {
+        return categoryDetailRepository.findAllByProductId(productId);
     }
 }

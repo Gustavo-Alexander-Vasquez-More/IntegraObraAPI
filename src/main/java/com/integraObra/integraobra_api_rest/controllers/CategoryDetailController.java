@@ -5,10 +5,7 @@ import com.integraObra.integraobra_api_rest.models.CategoryDetail;
 import com.integraObra.integraobra_api_rest.services.categories.CategoryDetailServiceJPA;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/category-details")
@@ -21,5 +18,15 @@ public class CategoryDetailController {
     @PostMapping
     public ResponseEntity<CategoryDetail> createCategoryDetail(@Valid @RequestBody CreateCategoryDetailRequestDTO createCategoryDetailRequestDTO) {
         return ResponseEntity.status(201).body(categoryDetailServiceJPA.createCategoryDetail(createCategoryDetailRequestDTO));
+    }
+
+    @GetMapping("/by-category")
+    public ResponseEntity<CategoryDetail> getCategoryDetailByCategoryId(@RequestParam Long categoryId) {
+        return ResponseEntity.ok().body(categoryDetailServiceJPA.findAllByCategoryId(categoryId).get(0));
+    }
+
+    @GetMapping("/by-product")
+    public ResponseEntity<CategoryDetail> getCategoryDetailByProductId(@RequestParam Long productId) {
+        return ResponseEntity.ok().body(categoryDetailServiceJPA.findAllByProductId(productId).get(0));
     }
 }
