@@ -9,6 +9,7 @@ import com.integraObra.integraobra_api_rest.models.Product;
 import com.integraObra.integraobra_api_rest.repositories.ProductRepository;
 import com.integraObra.integraobra_api_rest.repositories.CategoryDetailRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 
@@ -45,12 +46,13 @@ public class ProductServiceGeneralCrudJPA implements ProductServiceGeneralCrud {
     }
 
     //ELIMINAR PRODUCTO POR ID
+    //TAMBIEN SE ELIMINAN LOS DETALLES DE CATEGORIA ASOCIADOS AL PRODUCTO DE MANERA QUE NO ARROJE UNA VIOLACION DE RESTRICCION DE CLAVE FORANEA
+    @Transactional
     public boolean deleteProductById(Long productId) {
-        boolean existsById = productRepository.existsById(productId);
-        if (!existsById) {
-            throw new NotFoundException("No se puede eliminar el producto. El ID proporcionado no existe.");
-        }
-        productRepository.deleteById(productId);
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new NotFoundException("El ID proporcionado indica que el producto no existe."));
+        categoryDetailRepository.deleteByProductId(productId);
+        productRepository.delete(product);
         return true;
     }
 
