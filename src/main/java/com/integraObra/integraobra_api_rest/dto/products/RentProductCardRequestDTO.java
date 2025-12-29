@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
@@ -16,8 +17,9 @@ public class RentProductCardRequestDTO {
     private BigDecimal rentPrice;
     private boolean priceVisibleForRent;
     private int stock;
+    private List<ProductCategoryDetailDTO> categories;
 
-    public static RentProductCardRequestDTO fromEntity(com.integraObra.integraobra_api_rest.models.Product product) {
+    public static RentProductCardRequestDTO fromEntity(com.integraObra.integraobra_api_rest.models.Product product, List<ProductCategoryDetailDTO> categoriesList) {
         RentProductCardRequestDTO dto = new RentProductCardRequestDTO();
         dto.setId(product.getId());
         dto.setName(product.getName());
@@ -25,7 +27,7 @@ public class RentProductCardRequestDTO {
         dto.setRentPrice(product.getRentPrice());
         dto.setPriceVisibleForRent(product.isPriceVisibleForRent());
         dto.setStock(product.getStock());
+        dto.setCategories(categoriesList);
         return dto;
     }
-
 }

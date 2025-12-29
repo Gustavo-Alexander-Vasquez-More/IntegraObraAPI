@@ -1,12 +1,16 @@
 package com.integraObra.integraobra_api_rest.services.products;
 
 import com.integraObra.integraobra_api_rest.dto.products.RentProductCardRequestDTO;
+import com.integraObra.integraobra_api_rest.dto.products.ProductCategoryDetailDTO;
 import com.integraObra.integraobra_api_rest.models.Product;
 import com.integraObra.integraobra_api_rest.repositories.CategoryDetailRepository;
 import com.integraObra.integraobra_api_rest.repositories.ProductRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class RentProductServiceCatalogoJPA {
@@ -18,29 +22,59 @@ public class RentProductServiceCatalogoJPA {
         this.categoryDetailRepository = categoryDetailRepository;
     }
 
+    // Helper: mapear Page<Product> a Page<RentProductCardRequestDTO> obteniendo categorias por productIds en 1 consulta
+    private Page<RentProductCardRequestDTO> mapProductsPageToDtoWithCategories(Page<Product> productsPage) {
+        if (productsPage == null || productsPage.isEmpty()) {
+            return productsPage == null ? Page.empty() : productsPage.map(p -> {
+                // sin categorias
+                return RentProductCardRequestDTO.fromEntity(p, Collections.emptyList());
+            });
+        }
+
+        List<Long> productIds = productsPage.stream().map(Product::getId).collect(Collectors.toList());
+
+        List<Object[]> triples = categoryDetailRepository.findProductIdAndCategoryDetailIdAndCategoryNameByProductIds(productIds);
+
+        // Agrupar por productId -> lista de ProductCategoryDetailDTO
+        Map<Long, List<ProductCategoryDetailDTO>> categoriesByProductId = new HashMap<>();
+        for (Object[] t : triples) {
+            Long pId = t[0] == null ? null : ((Number) t[0]).longValue();
+            Long categoryDetailId = t[1] == null ? null : ((Number) t[1]).longValue();
+            String catName = t[2] == null ? null : t[2].toString();
+            if (pId == null || categoryDetailId == null || catName == null) continue;
+            categoriesByProductId.computeIfAbsent(pId, k -> new ArrayList<>()).add(new ProductCategoryDetailDTO(categoryDetailId, catName));
+        }
+
+        // Mapear
+        return productsPage.map(product -> {
+            List<ProductCategoryDetailDTO> cats = categoriesByProductId.getOrDefault(product.getId(), Collections.emptyList());
+            return RentProductCardRequestDTO.fromEntity(product, cats);
+        });
+    }
+
     //OBTENER TODOS LOS PRODUCTOS EN RENTA PAGINADOS
     public Page<RentProductCardRequestDTO> getAllRentProductsPaginated(Pageable pageable) {
         Page<Product> productsPage = productRepository.findAllRentProducts(pageable);
-        return productsPage.map(RentProductCardRequestDTO::fromEntity);
+        return mapProductsPageToDtoWithCategories(productsPage);
     }
 
     //OBTENER TODOS LOS PRODUCTOS EN RENTA DE UNA CATEGORIA PAGINADOS
     public Page<RentProductCardRequestDTO> getRentProductsByCategoryPaginated(Long categoryId, Pageable pageable){
         Page<Product> productsPage = productRepository.findAllRentProductsByCategoryId(categoryId, pageable);
-        return productsPage.map(RentProductCardRequestDTO::fromEntity);
+        return mapProductsPageToDtoWithCategories(productsPage);
     }
 
     //OBTENER PRODUCTOS EN RENTA POR TERMINO DE BUSQUEDA PAGINADOS
     public Page<RentProductCardRequestDTO> getRentProductsBySearchTermPaginated(String searchTerm, Pageable pageable) {
         // Implementar la lógica para buscar productos por término de búsqueda
         Page<Product> productsPage = productRepository.findAllRentProductsBySearchTerm(searchTerm, pageable);
-        return productsPage.map(RentProductCardRequestDTO::fromEntity);
+        return mapProductsPageToDtoWithCategories(productsPage);
     }
 
     //OBTENER PRODUCTOS EN RENTA POR CATEGORIA Y TERMINO DE BUSQUEDA PAGINADOS
     public Page<RentProductCardRequestDTO> getRentProductsByCategoryAndSearchTermPaginated(Long categoryId, String searchTerm, Pageable pageable){
         Page<Product> productsPage=productRepository.findAllRentProductsByCategoryIdAndSearchTerm(categoryId, searchTerm, pageable);
-        return productsPage.map(RentProductCardRequestDTO::fromEntity);
+        return mapProductsPageToDtoWithCategories(productsPage);
     }
 
     //OBTENER PRODUCTOS EN RENTA PAGINADOS CON FILTROS POR CATEGORIA Y TERMINO DE BUSQUEDA SINO TODOS

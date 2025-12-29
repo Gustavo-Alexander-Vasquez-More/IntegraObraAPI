@@ -4,6 +4,7 @@ import com.integraObra.integraobra_api_rest.dto.products.CreateProductRequestDTO
 import com.integraObra.integraobra_api_rest.dto.products.ProductResponseDTO;
 import com.integraObra.integraobra_api_rest.dto.products.RentProductCardRequestDTO;
 import com.integraObra.integraobra_api_rest.dto.products.UpdateRequestProductDTO;
+import com.integraObra.integraobra_api_rest.dto.products.ProductCategoryDetailDTO;
 import com.integraObra.integraobra_api_rest.exceptions.NotFoundException;
 import com.integraObra.integraobra_api_rest.exceptions.ProductExistException;
 import com.integraObra.integraobra_api_rest.models.Product;
@@ -12,7 +13,8 @@ import com.integraObra.integraobra_api_rest.repositories.CategoryDetailRepositor
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 
@@ -132,9 +134,29 @@ public class ProductServiceGeneralCrudJPA implements ProductServiceGeneralCrud {
                 products = productRepository.findAll();
             }
         }
+
+        if (products == null || products.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Long> productIds = products.stream().map(Product::getId).collect(Collectors.toList());
+        List<Object[]> triples = categoryDetailRepository.findProductIdAndCategoryDetailIdAndCategoryNameByProductIds(productIds);
+
+        Map<Long, List<ProductCategoryDetailDTO>> categoriesByProductId = new HashMap<>();
+        for (Object[] t : triples) {
+            Long pId = t[0] == null ? null : ((Number) t[0]).longValue();
+            Long categoryDetailId = t[1] == null ? null : ((Number) t[1]).longValue();
+            String catName = t[2] == null ? null : t[2].toString();
+            if (pId == null || categoryDetailId == null || catName == null) continue;
+            categoriesByProductId.computeIfAbsent(pId, k -> new ArrayList<>()).add(new ProductCategoryDetailDTO(categoryDetailId, catName));
+        }
+
         return products.stream()
-                .map(RentProductCardRequestDTO::fromEntity)
-                .toList();
+                .map(product -> {
+                    List<ProductCategoryDetailDTO> cats = categoriesByProductId.getOrDefault(product.getId(), Collections.emptyList());
+                    return RentProductCardRequestDTO.fromEntity(product, cats);
+                })
+                .collect(Collectors.toList());
     }
 
 
