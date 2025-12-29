@@ -2,6 +2,7 @@ package com.integraObra.integraobra_api_rest.services.products;
 
 import com.integraObra.integraobra_api_rest.dto.products.CreateProductRequestDTO;
 import com.integraObra.integraobra_api_rest.dto.products.ProductResponseDTO;
+import com.integraObra.integraobra_api_rest.dto.products.RentProductCardRequestDTO;
 import com.integraObra.integraobra_api_rest.dto.products.UpdateRequestProductDTO;
 import com.integraObra.integraobra_api_rest.exceptions.NotFoundException;
 import com.integraObra.integraobra_api_rest.exceptions.ProductExistException;
@@ -10,6 +11,8 @@ import com.integraObra.integraobra_api_rest.repositories.ProductRepository;
 import com.integraObra.integraobra_api_rest.repositories.CategoryDetailRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 
@@ -116,6 +119,19 @@ public class ProductServiceGeneralCrudJPA implements ProductServiceGeneralCrud {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new NotFoundException("Producto no encontrado con el ID proporcionado."));
         return ProductResponseDTO.fromEntity(product);
+    }
+
+    //LISTA DE TODOS LOS PRODUCTOS FILTRADOS POR CATEGORIA Y SI NO HAY CATEGORIA ARROJA TODOS LOS PRODUCTOS
+    public List<RentProductCardRequestDTO> getAllProductsByCategoryId(Long categoryId) {
+        List<Product> products;
+        if (categoryId != null) {
+            products = productRepository.findAllProductsByCategoryId(categoryId);
+        } else {
+            products = productRepository.findAll();
+        }
+        return products.stream()
+                .map(RentProductCardRequestDTO::fromEntity)
+                .toList();
     }
 
 }

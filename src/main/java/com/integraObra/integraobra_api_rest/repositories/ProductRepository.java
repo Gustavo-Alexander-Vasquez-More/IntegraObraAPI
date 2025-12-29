@@ -31,6 +31,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                                                @Param("searchTerm") String searchTerm,
                                                Pageable pageable);
 
+    //TODOS LOS PRODUCTOS FILTRADOS POR CATEGORIA
+    @Query("SELECT cd.product FROM CategoryDetail cd WHERE cd.category.id = :categoryId")
+    List<Product> findAllProductsByCategoryId(@Param("categoryId") Long categoryId);
+
     //Repository para productos en renta
 
     //obtener todos los productos que sean isForRent = true y filtrados por termino de busqueda (solo por nombre)
