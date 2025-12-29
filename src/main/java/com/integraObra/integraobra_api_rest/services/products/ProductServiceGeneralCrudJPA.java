@@ -121,17 +121,21 @@ public class ProductServiceGeneralCrudJPA implements ProductServiceGeneralCrud {
         return ProductResponseDTO.fromEntity(product);
     }
 
-    //LISTA DE TODOS LOS PRODUCTOS FILTRADOS POR CATEGORIA Y SI NO HAY CATEGORIA ARROJA TODOS LOS PRODUCTOS
+    //LISTA DE TODOS LOS PRODUCTOS FILTRADOS POR CATEGORIA Y SINO HAY NIGUNO ARROJAR TODOS LOS PRODUCTOS
     public List<RentProductCardRequestDTO> getAllProductsByCategoryId(Long categoryId) {
         List<Product> products;
-        if (categoryId != null) {
-            products = productRepository.findAllProductsByCategoryId(categoryId);
-        } else {
+        if (categoryId == 0) {
             products = productRepository.findAll();
+        } else {
+            products = productRepository.findProductsByCategoryId(categoryId);
+            if (products.isEmpty()) {
+                products = productRepository.findAll();
+            }
         }
         return products.stream()
                 .map(RentProductCardRequestDTO::fromEntity)
                 .toList();
     }
+
 
 }
