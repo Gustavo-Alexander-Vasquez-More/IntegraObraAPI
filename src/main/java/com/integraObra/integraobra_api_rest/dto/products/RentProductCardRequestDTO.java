@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 public class RentProductCardRequestDTO {
     private Long id;
     private String name;
+    private String cardImageUrl;
     private BigDecimal rentPrice;
     private boolean priceVisibleForRent;
     private int stock;
@@ -20,6 +21,7 @@ public class RentProductCardRequestDTO {
         RentProductCardRequestDTO dto = new RentProductCardRequestDTO();
         dto.setId(product.getId());
         dto.setName(product.getName());
+        dto.setCardImageUrl(product.getCardImageUrl());
         dto.setRentPrice(product.getRentPrice());
         dto.setPriceVisibleForRent(product.isPriceVisibleForRent());
         dto.setStock(product.getStock());
