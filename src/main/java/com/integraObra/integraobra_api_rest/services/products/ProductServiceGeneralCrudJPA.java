@@ -1,10 +1,6 @@
 package com.integraObra.integraobra_api_rest.services.products;
 
-import com.integraObra.integraobra_api_rest.dto.products.CreateProductRequestDTO;
-import com.integraObra.integraobra_api_rest.dto.products.ProductResponseDTO;
-import com.integraObra.integraobra_api_rest.dto.products.RentProductCardRequestDTO;
-import com.integraObra.integraobra_api_rest.dto.products.UpdateRequestProductDTO;
-import com.integraObra.integraobra_api_rest.dto.products.ProductCategoryDetailDTO;
+import com.integraObra.integraobra_api_rest.dto.products.*;
 import com.integraObra.integraobra_api_rest.exceptions.NotFoundException;
 import com.integraObra.integraobra_api_rest.exceptions.ProductExistException;
 import com.integraObra.integraobra_api_rest.models.Product;
@@ -117,7 +113,7 @@ public class ProductServiceGeneralCrudJPA implements ProductServiceGeneralCrud {
     }
 
     //OBTENER PRODUCTO POR ID
-    public RentProductCardRequestDTO getProductById(Long productId) {
+    public EspecificProductCatalogResponseDTO getProductById(Long productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new NotFoundException("Producto no encontrado con el ID proporcionado."));
 
@@ -134,8 +130,7 @@ public class ProductServiceGeneralCrudJPA implements ProductServiceGeneralCrud {
                 categories.add(new ProductCategoryDetailDTO(categoryDetailId, catName));
             }
         }
-
-        return RentProductCardRequestDTO.fromEntity(product, categories);
+        return EspecificProductCatalogResponseDTO.fromEntity(product, categories);
     }
 
     //LISTA DE TODOS LOS PRODUCTOS FILTRADOS POR CATEGORIA Y SINO HAY NIGUNO ARROJAR TODOS LOS PRODUCTOS

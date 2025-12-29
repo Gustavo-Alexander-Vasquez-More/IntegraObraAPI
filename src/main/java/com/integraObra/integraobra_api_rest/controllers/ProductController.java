@@ -34,8 +34,8 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(productServiceGeneralCrud.createProduct(createProductRequestDTO));
     }
 
-    @GetMapping("/{productId}")
-    public ResponseEntity<RentProductCardRequestDTO> getProductById(@PathVariable Long productId){
+    @GetMapping("/especific-product/{productId}")
+    public ResponseEntity<EspecificProductCatalogResponseDTO> getProductById(@PathVariable Long productId){
         return ResponseEntity.status(HttpStatus.OK).body(productServiceGeneralCrud.getProductById(productId));
     }
 

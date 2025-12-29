@@ -1,9 +1,6 @@
 package com.integraObra.integraobra_api_rest.services.products;
 
-import com.integraObra.integraobra_api_rest.dto.products.CreateProductRequestDTO;
-import com.integraObra.integraobra_api_rest.dto.products.RentProductCardRequestDTO;
-import com.integraObra.integraobra_api_rest.dto.products.UpdateRequestProductDTO;
-import com.integraObra.integraobra_api_rest.dto.products.ProductResponseDTO;
+import com.integraObra.integraobra_api_rest.dto.products.*;
 import com.integraObra.integraobra_api_rest.models.Product;
 
 import java.util.List;
@@ -14,8 +11,8 @@ public interface ProductServiceGeneralCrud {
     //CREAR PRODUCTO
     Product createProduct(CreateProductRequestDTO createProductRequestDTO);
 
-    //OBTENER PRODUCTO POR ID
-    RentProductCardRequestDTO getProductById(Long productId);
+    //OBTENER PRODUCTO POR ID PARA LA CARD EN EL CATALOGO
+    EspecificProductCatalogResponseDTO getProductById(Long productId);
 
     //ELIMINAR PRODUCTO POR ID
     boolean deleteProductById(Long productId);
