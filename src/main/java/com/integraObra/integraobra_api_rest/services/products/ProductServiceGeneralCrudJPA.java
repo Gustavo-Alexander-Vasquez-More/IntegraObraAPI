@@ -117,10 +117,25 @@ public class ProductServiceGeneralCrudJPA implements ProductServiceGeneralCrud {
     }
 
     //OBTENER PRODUCTO POR ID
-    public ProductResponseDTO getProductById(Long productId) {
+    public RentProductCardRequestDTO getProductById(Long productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new NotFoundException("Producto no encontrado con el ID proporcionado."));
-        return ProductResponseDTO.fromEntity(product);
+
+        // Obtener categorías asociadas a este producto usando la consulta que devuelve triples
+        List<Object[]> triples = categoryDetailRepository.findProductIdAndCategoryDetailIdAndCategoryNameByProductIds(Collections.singletonList(productId));
+        List<ProductCategoryDetailDTO> categories = new ArrayList<>();
+        for (Object[] t : triples) {
+            Long pId = t[0] == null ? null : ((Number) t[0]).longValue();
+            Long categoryDetailId = t[1] == null ? null : ((Number) t[1]).longValue();
+            String catName = t[2] == null ? null : t[2].toString();
+            if (pId == null || categoryDetailId == null || catName == null) continue;
+            // solo añadir si el triple corresponde al productId solicitado
+            if (pId.equals(productId)) {
+                categories.add(new ProductCategoryDetailDTO(categoryDetailId, catName));
+            }
+        }
+
+        return RentProductCardRequestDTO.fromEntity(product, categories);
     }
 
     //LISTA DE TODOS LOS PRODUCTOS FILTRADOS POR CATEGORIA Y SINO HAY NIGUNO ARROJAR TODOS LOS PRODUCTOS

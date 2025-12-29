@@ -35,7 +35,7 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}")
-    public ResponseEntity<ProductResponseDTO> getProductById(@PathVariable Long productId){
+    public ResponseEntity<RentProductCardRequestDTO> getProductById(@PathVariable Long productId){
         return ResponseEntity.status(HttpStatus.OK).body(productServiceGeneralCrud.getProductById(productId));
     }
 
