@@ -10,5 +10,6 @@ import lombok.Setter;
 public class ProductCategoryDetailDTO {
     private Long categoryDetailId;
     private String name;
+    private Long categoryId;
 }
 

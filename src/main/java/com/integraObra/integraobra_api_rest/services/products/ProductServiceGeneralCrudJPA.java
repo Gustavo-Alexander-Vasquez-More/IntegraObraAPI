@@ -124,10 +124,11 @@ public class ProductServiceGeneralCrudJPA implements ProductServiceGeneralCrud {
             Long pId = t[0] == null ? null : ((Number) t[0]).longValue();
             Long categoryDetailId = t[1] == null ? null : ((Number) t[1]).longValue();
             String catName = t[2] == null ? null : t[2].toString();
+            Long catId = t[3] == null ? null : ((Number) t[3]).longValue();
             if (pId == null || categoryDetailId == null || catName == null) continue;
             // solo añadir si el triple corresponde al productId solicitado
             if (pId.equals(productId)) {
-                categories.add(new ProductCategoryDetailDTO(categoryDetailId, catName));
+                categories.add(new ProductCategoryDetailDTO(categoryDetailId, catName, catId));
             }
         }
         return EspecificProductCatalogResponseDTO.fromEntity(product, categories);
@@ -157,8 +158,9 @@ public class ProductServiceGeneralCrudJPA implements ProductServiceGeneralCrud {
             Long pId = t[0] == null ? null : ((Number) t[0]).longValue();
             Long categoryDetailId = t[1] == null ? null : ((Number) t[1]).longValue();
             String catName = t[2] == null ? null : t[2].toString();
+            Long catId = t[3] == null ? null : ((Number) t[3]).longValue();
             if (pId == null || categoryDetailId == null || catName == null) continue;
-            categoriesByProductId.computeIfAbsent(pId, k -> new ArrayList<>()).add(new ProductCategoryDetailDTO(categoryDetailId, catName));
+            categoriesByProductId.computeIfAbsent(pId, k -> new ArrayList<>()).add(new ProductCategoryDetailDTO(categoryDetailId, catName, catId));
         }
 
         return products.stream()
