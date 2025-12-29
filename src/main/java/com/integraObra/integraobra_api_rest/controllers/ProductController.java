@@ -67,8 +67,8 @@ public class ProductController {
         return ResponseEntity.ok(rentProductServiceCatalogoJPA.getRentProductsPaginatedWithFilterInCatalog(searchTerm, categoryId ,pageable));
     }
 
-    @GetMapping("/products-by-category-or-all")
-    public ResponseEntity<List<RentProductCardRequestDTO>> getAllProductsByCategoryId(@RequestParam Long categoryId){
+    @GetMapping("/by-category-or-all/{categoryId}")
+    public ResponseEntity<List<RentProductCardRequestDTO>> getAllProductsByCategoryId(@PathVariable Long categoryId){
         return ResponseEntity.status(HttpStatus.OK).body(productServiceGeneralCrud.getAllProductsByCategoryId(categoryId));
     }
 
