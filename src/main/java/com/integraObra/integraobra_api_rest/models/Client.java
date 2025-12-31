@@ -21,8 +21,14 @@ public class Client {
     private String name;
     private String email;
     private String phone;
-    private List<ReputationClient> reputations;
+    @Enumerated(EnumType.STRING)
+    private ReputationClient reputation;
     private String frontPhotoIne;
     private String backPhotoIne;
     private LocalDateTime creationDate;
+
+    @PrePersist
+    protected void onCreate() {
+        this.creationDate = LocalDateTime.now();
+    }
 }

@@ -32,7 +32,6 @@ public class UpdateRequestProductDTO {
     @DecimalMin(value = "0.0", inclusive = false, message = "El precio de renta debe ser mayor que cero")
     private BigDecimal rentPrice;
 
-    // Booleanos como Boolean permiten null para indicar 'no modificar'
     private Boolean isForRent;
     private Boolean isForSale;
     private Boolean priceVisibleForRent;

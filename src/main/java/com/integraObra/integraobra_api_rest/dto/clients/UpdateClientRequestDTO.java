@@ -9,7 +9,7 @@ import lombok.Setter;
 
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
-public class CreateClientRequestDTO {
+public class UpdateClientRequestDTO {
     @NotEmpty(message = "El nombre no puede estar vacío.")
     private String name;
     private String email;
