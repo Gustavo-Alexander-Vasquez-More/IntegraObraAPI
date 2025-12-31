@@ -6,6 +6,8 @@ import com.integraObra.integraobra_api_rest.dto.clients.UpdateClientResponseDTO;
 import com.integraObra.integraobra_api_rest.models.Client;
 import com.integraObra.integraobra_api_rest.services.clients.ClientServiceJPA;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,5 +42,11 @@ public class ClientController {
     @GetMapping("/{clientId}")
     public ResponseEntity<Client> getClientById(@PathVariable Long clientId){
         return ResponseEntity.status(200).body(clientServiceJPA.getClientById(clientId));
+    }
+
+    //OBTENER TODOS LOS CLIENTES PAGINADOS
+    @GetMapping("/all-clients")
+    public ResponseEntity<Page<Client>> getAllClientsPaged(Pageable pageable){
+        return ResponseEntity.status(200).body(clientServiceJPA.getAllClientsPaged(pageable));
     }
 }

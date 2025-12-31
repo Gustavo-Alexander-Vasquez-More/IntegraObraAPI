@@ -6,6 +6,8 @@ import com.integraObra.integraobra_api_rest.dto.clients.UpdateClientResponseDTO;
 import com.integraObra.integraobra_api_rest.exceptions.NotFoundException;
 import com.integraObra.integraobra_api_rest.models.Client;
 import com.integraObra.integraobra_api_rest.repositories.ClientRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -74,6 +76,11 @@ public class ClientServiceJPA implements  ClientService{
     public Client getClientById(Long id) {
         return clientRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("El ID proporcionado indica que el cliente no existe."));
+    }
+
+    //Obtener todos los clientes paginados
+    public Page<Client> getAllClientsPaged(Pageable pageable) {
+        return clientRepository.findAll(pageable);
     }
 
 }
