@@ -20,11 +20,15 @@ public class RentDetail {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "rent_id", nullable = false)
+    private Rent rent; //Una renta puede tener muchos detalles de renta
+
+    @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
     private Product product; //Un producto puede estar en muchos detalles de renta
 
-    private Long quantity;
-    private Long daysRented;
+    private Integer quantity;
+    private Integer daysRented;
     private BigDecimal discountRate;
     private BigDecimal totalPriceWithDiscount;
 

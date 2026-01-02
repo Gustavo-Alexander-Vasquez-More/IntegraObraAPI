@@ -12,15 +12,11 @@ import java.util.List;
 @Entity
 @Table(name = "rents")
 @Getter @Setter
-@NoArgsConstructor @AllArgsConstructor
+@NoArgsConstructor
 public class Rent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "rent_id", nullable = false)
-    private List<RentDetail> rentDetails; //Relacion con detalle de renta, es decir una renta puede tener varios detalles, porque puede tener varios productos rentados
 
     @ManyToOne
     @JoinColumn(name = "client_id")
@@ -31,4 +27,10 @@ public class Rent {
     protected void onCreate() {
         this.creationDate = LocalDateTime.now();
     }
+
+    //constructor solo con id del cliente
+    public Rent(Client client) {
+        this.client = client;
+    }
+
 }
