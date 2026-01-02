@@ -17,13 +17,14 @@ public class ClientPaginatedPanelServiceJPA implements  ClientPaginatedPanelServ
   //OBTENER LOS CLIENTES PAGINADOS POR TERMINO DE BUSQUEDA(nombre, telefono o mail) SINO TODOS
     @Override
     public Page<ClientRequestDTO> getClientsPaginatedWithFilterInPanel(String searchTerm, Pageable pageable) {
-        if (searchTerm == null || searchTerm.isEmpty()) {
+        if (searchTerm == null || searchTerm.trim().isEmpty()) {
             return clientRepository.findAll(pageable).map(ClientRequestDTO::fromEntity);
         } else {
-            String likeSearchTerm = "%" + searchTerm.toLowerCase() + "%";
-            return clientRepository.findByNameIgnoreCaseContainingOrEmailIgnoreCaseContainingOrPhoneIgnoreCaseContaining(
-                    likeSearchTerm, likeSearchTerm, likeSearchTerm, pageable
-            ).map(ClientRequestDTO::fromEntity);
+            String term = searchTerm.trim();
+            return clientRepository
+                    .findByNameIgnoreCaseContainingOrEmailIgnoreCaseContainingOrPhoneIgnoreCaseContaining(
+                            term, term, term, pageable)
+                    .map(ClientRequestDTO::fromEntity);
         }
     }
 

@@ -10,6 +10,8 @@ import com.integraObra.integraobra_api_rest.services.clients.ClientPaginatedPane
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,6 +54,7 @@ public class ClientController {
     @GetMapping
     public ResponseEntity<Page<ClientRequestDTO>> getClientsPaginatedWithFilterInPanel(
             @RequestParam(required = false) String searchTerm,
+            @SortDefault(sort = "name", direction = Sort.Direction.ASC)
             Pageable pageable
     ) {
         Page<ClientRequestDTO> clientsPage = clientPaginatedPanelServiceJPA.getClientsPaginatedWithFilterInPanel(searchTerm, pageable);
