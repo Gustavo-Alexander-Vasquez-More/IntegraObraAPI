@@ -23,7 +23,7 @@ public class ClientGeneralCrudServiceJPA implements ClientGeneralCrudService {
     //Crear Cliente
     public Client createClient(CreateClientRequestDTO createClientRequestDTO) {
         Client client = new Client();
-        client.setName(createClientRequestDTO.getName());
+        client.setName(createClientRequestDTO.getName().toUpperCase());
         client.setEmail(createClientRequestDTO.getEmail());
         client.setPhone(createClientRequestDTO.getPhone());
         client.setReputation(createClientRequestDTO.getReputation());
