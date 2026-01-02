@@ -15,11 +15,11 @@ import java.util.stream.Collectors;
 @Service
 
 //IMPLEMENTACION DEL SERVICIO GENERAL DE CRUD DE PRODUCTOS
-public class ProductServiceGeneralCrudJPA implements ProductServiceGeneralCrud {
+public class ProductGeneralCrudServiceJPA implements ProductGeneralCrudService {
     private final ProductRepository productRepository;
     private final CategoryDetailRepository categoryDetailRepository;
 
-    public ProductServiceGeneralCrudJPA(ProductRepository productRepository, CategoryDetailRepository categoryDetailRepository) {
+    public ProductGeneralCrudServiceJPA(ProductRepository productRepository, CategoryDetailRepository categoryDetailRepository) {
         this.productRepository = productRepository;
         this.categoryDetailRepository = categoryDetailRepository;
     }

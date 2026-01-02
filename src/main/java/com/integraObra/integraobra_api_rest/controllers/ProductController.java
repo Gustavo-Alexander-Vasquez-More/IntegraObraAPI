@@ -2,9 +2,9 @@ package com.integraObra.integraobra_api_rest.controllers;
 
 import com.integraObra.integraobra_api_rest.dto.products.*;
 import com.integraObra.integraobra_api_rest.models.Product;
-import com.integraObra.integraobra_api_rest.services.products.ProductServiceGeneralCrudJPA;
-import com.integraObra.integraobra_api_rest.services.products.ProductServicePaginatedPanelJPA;
-import com.integraObra.integraobra_api_rest.services.products.RentProductServiceCatalogoJPA;
+import com.integraObra.integraobra_api_rest.services.products.ProductGeneralCrudServiceJPA;
+import com.integraObra.integraobra_api_rest.services.products.ProductPaginatedPanelServiceJPA;
+import com.integraObra.integraobra_api_rest.services.products.RentProductCatalogServiceJPA;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,14 +17,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
-  private final ProductServiceGeneralCrudJPA productServiceGeneralCrud;
-  private final ProductServicePaginatedPanelJPA productServicePaginatedPanel;
-  private final RentProductServiceCatalogoJPA rentProductServiceCatalogoJPA;
+  private final ProductGeneralCrudServiceJPA productServiceGeneralCrud;
+  private final ProductPaginatedPanelServiceJPA productServicePaginatedPanel;
+  private final RentProductCatalogServiceJPA rentProductCatalogServiceJPA;
 
-    public ProductController(ProductServiceGeneralCrudJPA productServiceGeneralCrud, ProductServicePaginatedPanelJPA productServicePaginatedPanel, RentProductServiceCatalogoJPA rentProductServiceCatalogoJPA) {
+    public ProductController(ProductGeneralCrudServiceJPA productServiceGeneralCrud, ProductPaginatedPanelServiceJPA productServicePaginatedPanel, RentProductCatalogServiceJPA rentProductCatalogServiceJPA) {
         this.productServicePaginatedPanel = productServicePaginatedPanel;
         this.productServiceGeneralCrud = productServiceGeneralCrud;
-        this.rentProductServiceCatalogoJPA = rentProductServiceCatalogoJPA;
+        this.rentProductCatalogServiceJPA = rentProductCatalogServiceJPA;
     }
 
     //Endpoints para CRUD general de productos
@@ -64,7 +64,7 @@ public class ProductController {
             @RequestParam(required = false) String searchTerm,
             @RequestParam(required = false) Long categoryId,
             Pageable pageable) {
-        return ResponseEntity.ok(rentProductServiceCatalogoJPA.getRentProductsPaginatedWithFilterInCatalog(searchTerm, categoryId ,pageable));
+        return ResponseEntity.ok(rentProductCatalogServiceJPA.getRentProductsPaginatedWithFilterInCatalog(searchTerm, categoryId ,pageable));
     }
 
     @GetMapping("/by-category-or-all/{categoryId}")

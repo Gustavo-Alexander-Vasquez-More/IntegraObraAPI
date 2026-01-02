@@ -12,11 +12,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ClientServiceJPA implements  ClientService{
+public class ClientGeneralCrudServiceJPA implements ClientGeneralCrudService {
 
     private final ClientRepository clientRepository;
 
-    public ClientServiceJPA(ClientRepository clientRepository) {
+    public ClientGeneralCrudServiceJPA(ClientRepository clientRepository) {
         this.clientRepository = clientRepository;
     }
 
@@ -78,10 +78,4 @@ public class ClientServiceJPA implements  ClientService{
         return clientRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("El ID proporcionado indica que el cliente no existe."));
     }
-
-    //Obtener todos los clientes paginados
-    public Page<ClientRequestDTO> getAllClientsPaged(Pageable pageable) {
-        return clientRepository.findAll(pageable).map(ClientRequestDTO::fromEntity);
-    }
-
 }

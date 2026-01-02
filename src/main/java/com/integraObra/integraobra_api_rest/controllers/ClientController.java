@@ -5,7 +5,8 @@ import com.integraObra.integraobra_api_rest.dto.clients.CreateClientRequestDTO;
 import com.integraObra.integraobra_api_rest.dto.clients.UpdateClientRequestDTO;
 import com.integraObra.integraobra_api_rest.dto.clients.UpdateClientResponseDTO;
 import com.integraObra.integraobra_api_rest.models.Client;
-import com.integraObra.integraobra_api_rest.services.clients.ClientServiceJPA;
+import com.integraObra.integraobra_api_rest.services.clients.ClientGeneralCrudServiceJPA;
+import com.integraObra.integraobra_api_rest.services.clients.ClientPaginatedPanelServiceJPA;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,9 +16,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/clients")
 public class ClientController {
-    private final ClientServiceJPA clientServiceJPA;
+    private final ClientGeneralCrudServiceJPA clientServiceJPA;
+    private final ClientPaginatedPanelServiceJPA clientPaginatedPanelServiceJPA;
 
-    public ClientController(ClientServiceJPA clientServiceJPA) {
+    public ClientController(ClientGeneralCrudServiceJPA clientServiceJPA, ClientPaginatedPanelServiceJPA clientPaginatedPanelServiceJPA) {
+        this.clientPaginatedPanelServiceJPA = clientPaginatedPanelServiceJPA;
         this.clientServiceJPA = clientServiceJPA;
     }
 
@@ -45,9 +48,13 @@ public class ClientController {
         return ResponseEntity.status(200).body(clientServiceJPA.getClientById(clientId));
     }
 
-    //OBTENER TODOS LOS CLIENTES PAGINADOS
-    @GetMapping("/all-clients")
-    public ResponseEntity<Page<ClientRequestDTO>> getAllClientsPaged(Pageable pageable){
-        return ResponseEntity.status(200).body(clientServiceJPA.getAllClientsPaged(pageable));
+    //OBTENER LOS CLIENTES PAGINADOS POR TERMINO DE BUSQUEDA(nombre, telefono o mail) SINO TODOS
+    @GetMapping
+    public ResponseEntity<Page<ClientRequestDTO>> getClientsPaginatedWithFilterInPanel(
+            @RequestParam(required = false) String searchTerm,
+            Pageable pageable
+    ) {
+        Page<ClientRequestDTO> clientsPage = clientPaginatedPanelServiceJPA.getClientsPaginatedWithFilterInPanel(searchTerm, pageable);
+        return ResponseEntity.ok(clientsPage);
     }
 }

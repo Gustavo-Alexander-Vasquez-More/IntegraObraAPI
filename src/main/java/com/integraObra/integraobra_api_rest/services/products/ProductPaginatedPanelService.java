@@ -5,7 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 //SERVICIO PARA OBTENER PRODUCTOS PAGINADOS PARA EL PANEL DE GESTION DE PRODUCTOS
-public interface ProductServicePaginatedPanel {
+public interface ProductPaginatedPanelService {
     //OBTENER TODOS LOS PRODUCTOS PAGINADOS
     Page<ProductCardPanelResponseDTO> getAllProductsPaginated(Pageable pageable);
 

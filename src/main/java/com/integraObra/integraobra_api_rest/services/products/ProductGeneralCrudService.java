@@ -6,7 +6,7 @@ import com.integraObra.integraobra_api_rest.models.Product;
 import java.util.List;
 
 //SERVICIO GENERAL DE CRUD DE PRODUCTOS-SON METODOS BASICOS
-public interface ProductServiceGeneralCrud {
+public interface ProductGeneralCrudService {
 
     //CREAR PRODUCTO
     Product createProduct(CreateProductRequestDTO createProductRequestDTO);

@@ -4,7 +4,7 @@ import com.integraObra.integraobra_api_rest.dto.products.RentProductCardRequestD
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-public interface RentProductServiceCatalogo {
+public interface RentProductCatalogService {
     //OBTENER TODOS LOS PRODUCTOS EN RENTA PAGINADOS
     Page<RentProductCardRequestDTO> getAllRentProductsPaginated(Pageable pageable);
 

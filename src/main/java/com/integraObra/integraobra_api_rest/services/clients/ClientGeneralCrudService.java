@@ -8,7 +8,7 @@ import com.integraObra.integraobra_api_rest.models.Client;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-public interface ClientService {
+public interface ClientGeneralCrudService {
 
     //CREAR CLIENTE
     Client createClient(CreateClientRequestDTO createClientRequestDTO);
@@ -19,10 +19,7 @@ public interface ClientService {
     //ACTUALIZAR CLIENTE POR ID
     UpdateClientResponseDTO updateClientById(Long id, UpdateClientRequestDTO updateClientRequestDTO);
 
-    //Obtener cliente por ID
+    //OBTENER UN CLIENTE POR ID
     Client getClientById(Long id);
-
-    //Obtener todos los clientes paginados
-    Page<ClientRequestDTO> getAllClientsPaged(Pageable pageable);
 
 }

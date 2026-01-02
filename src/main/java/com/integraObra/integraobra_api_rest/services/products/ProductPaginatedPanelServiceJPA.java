@@ -1,6 +1,6 @@
 package com.integraObra.integraobra_api_rest.services.products;
 
-import com.integraObra.integraobra_api_rest.dto.products.RentProductCardRequestDTO;
+import com.integraObra.integraobra_api_rest.dto.products.ProductCardPanelResponseDTO;
 import com.integraObra.integraobra_api_rest.dto.products.ProductCategoryDetailDTO;
 import com.integraObra.integraobra_api_rest.models.Product;
 import com.integraObra.integraobra_api_rest.repositories.CategoryDetailRepository;
@@ -12,23 +12,21 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
+//SERVICIO PARA OBTENER PRODUCTOS PAGINADOS PARA EL PANEL DE GESTION DE PRODUCTOS - IMPLEMENTACION JPA
 @Service
-public class RentProductServiceCatalogoJPA {
+public class ProductPaginatedPanelServiceJPA implements ProductPaginatedPanelService {
     private final ProductRepository productRepository;
     private final CategoryDetailRepository categoryDetailRepository;
 
-    public RentProductServiceCatalogoJPA(ProductRepository productRepository, CategoryDetailRepository categoryDetailRepository) {
+    public ProductPaginatedPanelServiceJPA(ProductRepository productRepository, CategoryDetailRepository categoryDetailRepository) {
         this.productRepository = productRepository;
         this.categoryDetailRepository = categoryDetailRepository;
     }
 
-    // Helper: mapear Page<Product> a Page<RentProductCardRequestDTO> obteniendo categorias por productIds en 1 consulta
-    private Page<RentProductCardRequestDTO> mapProductsPageToDtoWithCategories(Page<Product> productsPage) {
+    // Helper: mapear Page<Product> a Page<ProductCardPanelResponseDTO> obteniendo categorias por productIds en 1 consulta
+    private Page<ProductCardPanelResponseDTO> mapProductsPageToDtoWithCategories(Page<Product> productsPage) {
         if (productsPage == null || productsPage.isEmpty()) {
-            return productsPage == null ? Page.empty() : productsPage.map(p -> {
-                // sin categorias
-                return RentProductCardRequestDTO.fromEntity(p, Collections.emptyList());
-            });
+            return productsPage.map(p -> ProductCardPanelResponseDTO.fromEntity(p));
         }
 
         List<Long> productIds = productsPage.stream().map(Product::getId).collect(Collectors.toList());
@@ -49,54 +47,53 @@ public class RentProductServiceCatalogoJPA {
         // Mapear
         return productsPage.map(product -> {
             List<ProductCategoryDetailDTO> cats = categoriesByProductId.getOrDefault(product.getId(), Collections.emptyList());
-            return RentProductCardRequestDTO.fromEntity(product, cats);
+            return ProductCardPanelResponseDTO.fromEntityWithCategories(product, cats);
         });
     }
 
-    //OBTENER TODOS LOS PRODUCTOS EN RENTA PAGINADOS
-    public Page<RentProductCardRequestDTO> getAllRentProductsPaginated(Pageable pageable) {
-        Page<Product> productsPage = productRepository.findAllRentProducts(pageable);
+    //OBTENER TODOS LOS PRODUCTOS PAGINADOS
+    public Page<ProductCardPanelResponseDTO> getAllProductsPaginated(Pageable pageable) {
+        Page<Product> productsPage = productRepository.findAll(pageable);
         return mapProductsPageToDtoWithCategories(productsPage);
     }
 
-    //OBTENER TODOS LOS PRODUCTOS EN RENTA DE UNA CATEGORIA PAGINADOS
-    public Page<RentProductCardRequestDTO> getRentProductsByCategoryPaginated(Long categoryId, Pageable pageable){
-        Page<Product> productsPage = productRepository.findAllRentProductsByCategoryId(categoryId, pageable);
+    //OBTENER TODOS LOS PRODUCTOS DE UNA CATEGORIA PAGINADOS
+    public Page<ProductCardPanelResponseDTO> getProductsByCategoryPaginated(Long categoryId, Pageable pageable){
+        Page<Product> productsPage = productRepository.findAllByCategoryId(categoryId, pageable);
         return mapProductsPageToDtoWithCategories(productsPage);
     }
 
-    //OBTENER PRODUCTOS EN RENTA POR TERMINO DE BUSQUEDA PAGINADOS
-    public Page<RentProductCardRequestDTO> getRentProductsBySearchTermPaginated(String searchTerm, Pageable pageable) {
+    //OBTENER PRODUCTOS POR TERMINO DE BUSQUEDA PAGINADOS
+    public Page<ProductCardPanelResponseDTO> getProductsBySearchTermPaginated(String searchTerm, Pageable pageable) {
         // Implementar la lógica para buscar productos por término de búsqueda
-        Page<Product> productsPage = productRepository.findAllRentProductsBySearchTerm(searchTerm, pageable);
+        Page<Product> productsPage = productRepository.findByNameContainingIgnoreCaseOrSkuContainingIgnoreCase(searchTerm, searchTerm, pageable);
         return mapProductsPageToDtoWithCategories(productsPage);
     }
 
-    //OBTENER PRODUCTOS EN RENTA POR CATEGORIA Y TERMINO DE BUSQUEDA PAGINADOS
-    public Page<RentProductCardRequestDTO> getRentProductsByCategoryAndSearchTermPaginated(Long categoryId, String searchTerm, Pageable pageable){
-        Page<Product> productsPage=productRepository.findAllRentProductsByCategoryIdAndSearchTerm(categoryId, searchTerm, pageable);
+    //OBTENER PRODUCTOS POR CATEGORIA Y TERMINO DE BUSQUEDA PAGINADOS
+    public Page<ProductCardPanelResponseDTO> getProductsByCategoryAndSearchTermPaginated(Long categoryId, String searchTerm, Pageable pageable){
+        Page<Product> productsPage=productRepository.findAllByCategoryIdAndSearchTerm(categoryId, searchTerm, pageable);
         return mapProductsPageToDtoWithCategories(productsPage);
     }
 
-    //OBTENER PRODUCTOS EN RENTA PAGINADOS CON FILTROS POR CATEGORIA Y TERMINO DE BUSQUEDA SINO TODOS
-    //SOLO SE USA PARA EL CATALOGO DE PRODUCTOS EN RENTA
-    public Page<RentProductCardRequestDTO> getRentProductsPaginatedWithFilterInCatalog (String searchTerm, Long categoryId, Pageable pageable){
-        //SI NO HAY CATEGORIA, NI TERMINO DE BUSQUEDA, DEVUELVE TODOS LOS PRODUCTOS EN RENTA PAGINADOS
+    //OBTENER PRODUCTOS PAGINADOS CON FILTROS POR CATEGORIA Y TERMINO DE BUSQUEDA SINO TODOS
+    //SOLO SE USA PARA EL PANEL DE GESTION DE PRODUCTOS
+    public Page<ProductCardPanelResponseDTO> getProductsPaginatedWithFilterInPanel (String searchTerm, Long categoryId, Pageable pageable){
+        //SI NO HAY CATEGORIA, NI TERMINO DE BUSQUEDA, DEVUELVE TODOS LOS PRODUCTOS PAGINADOS
         if((categoryId == null) && (searchTerm==null || searchTerm.isBlank())){
-            return getAllRentProductsPaginated(pageable);
+            return getAllProductsPaginated(pageable);
         }
         //SI HAY CATEGORIA, PERO NO TERMINO DE BUSQUEDA, TRAE TODOS LOS PRODUCTOS DE ESA CATEGORIA
         else if((categoryId!=null) && (searchTerm==null || searchTerm.isBlank())){
-            return getRentProductsByCategoryPaginated(categoryId, pageable);
+            return getProductsByCategoryPaginated(categoryId, pageable);
         }
         //SI HAY TERMINO DE BUSQUEDA, PERO NO CATEGORIA, BUSCA LOS PRODUCTO POR NAME O SKU QUE COINCIDAN CON EL TERMINO
         else if((categoryId==null) && (searchTerm!=null && !searchTerm.isBlank())) {
-            return getRentProductsBySearchTermPaginated(searchTerm, pageable);
+            return getProductsBySearchTermPaginated(searchTerm, pageable);
         }
         //SI HAY CATEGORIA Y TERMINO DE BUSQUEDA, PRIMERO TRAE LOS PRODUCTOS DE ESA CATEGORIA Y LUEGO FILTRA POR TERMINO
         else {
-            return getRentProductsByCategoryAndSearchTermPaginated(categoryId, searchTerm, pageable);
+            return getProductsByCategoryAndSearchTermPaginated(categoryId, searchTerm, pageable);
         }
     }
-
 }
