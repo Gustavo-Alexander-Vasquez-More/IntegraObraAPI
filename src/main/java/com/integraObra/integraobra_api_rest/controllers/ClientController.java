@@ -1,5 +1,6 @@
 package com.integraObra.integraobra_api_rest.controllers;
 
+import com.integraObra.integraobra_api_rest.dto.clients.ClientRequestDTO;
 import com.integraObra.integraobra_api_rest.dto.clients.CreateClientRequestDTO;
 import com.integraObra.integraobra_api_rest.dto.clients.UpdateClientRequestDTO;
 import com.integraObra.integraobra_api_rest.dto.clients.UpdateClientResponseDTO;
@@ -46,7 +47,7 @@ public class ClientController {
 
     //OBTENER TODOS LOS CLIENTES PAGINADOS
     @GetMapping("/all-clients")
-    public ResponseEntity<Page<Client>> getAllClientsPaged(Pageable pageable){
+    public ResponseEntity<Page<ClientRequestDTO>> getAllClientsPaged(Pageable pageable){
         return ResponseEntity.status(200).body(clientServiceJPA.getAllClientsPaged(pageable));
     }
 }

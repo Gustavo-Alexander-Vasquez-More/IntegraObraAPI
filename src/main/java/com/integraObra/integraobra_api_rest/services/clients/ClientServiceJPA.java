@@ -1,5 +1,6 @@
 package com.integraObra.integraobra_api_rest.services.clients;
 
+import com.integraObra.integraobra_api_rest.dto.clients.ClientRequestDTO;
 import com.integraObra.integraobra_api_rest.dto.clients.CreateClientRequestDTO;
 import com.integraObra.integraobra_api_rest.dto.clients.UpdateClientRequestDTO;
 import com.integraObra.integraobra_api_rest.dto.clients.UpdateClientResponseDTO;
@@ -79,8 +80,8 @@ public class ClientServiceJPA implements  ClientService{
     }
 
     //Obtener todos los clientes paginados
-    public Page<Client> getAllClientsPaged(Pageable pageable) {
-        return clientRepository.findAll(pageable);
+    public Page<ClientRequestDTO> getAllClientsPaged(Pageable pageable) {
+        return clientRepository.findAll(pageable).map(ClientRequestDTO::fromEntity);
     }
 
 }
