@@ -1,5 +1,6 @@
 package com.integraObra.integraobra_api_rest.dto.products;
 
+import com.integraObra.integraobra_api_rest.models.Product;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,7 +24,7 @@ public class ProductCardPanelResponseDTO {
         return fromEntityWithCategories(product, Collections.emptyList());
     }
 
-    public static ProductCardPanelResponseDTO fromEntityWithCategories(com.integraObra.integraobra_api_rest.models.Product product, List<ProductCategoryDetailDTO> categoriesList) {
+    public static ProductCardPanelResponseDTO fromEntityWithCategories(Product product, List<ProductCategoryDetailDTO> categoriesList) {
         ProductCardPanelResponseDTO dto = new ProductCardPanelResponseDTO();
         dto.setId(product.getId());
         dto.setName(product.getName());

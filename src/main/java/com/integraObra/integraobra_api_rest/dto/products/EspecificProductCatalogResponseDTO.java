@@ -1,5 +1,6 @@
 package com.integraObra.integraobra_api_rest.dto.products;
 
+import com.integraObra.integraobra_api_rest.models.Product;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,6 +11,7 @@ import java.util.List;
 @Getter @Setter
 @NoArgsConstructor
 public class EspecificProductCatalogResponseDTO {
+    private Long id;
     private String name;
     private String description;
     private String sku;
@@ -24,8 +26,9 @@ public class EspecificProductCatalogResponseDTO {
     private List<ProductCategoryDetailDTO> categoryDetail;
 
     //from entity
-    public static EspecificProductCatalogResponseDTO fromEntity(com.integraObra.integraobra_api_rest.models.Product product, List<ProductCategoryDetailDTO> categoriesList) {
+    public static EspecificProductCatalogResponseDTO fromEntity(Product product, List<ProductCategoryDetailDTO> categoriesList) {
         EspecificProductCatalogResponseDTO dto = new EspecificProductCatalogResponseDTO();
+        dto.setId(product.getId());
         dto.setName(product.getName());
         dto.setDescription(product.getDescription());
         dto.setSku(product.getSku());

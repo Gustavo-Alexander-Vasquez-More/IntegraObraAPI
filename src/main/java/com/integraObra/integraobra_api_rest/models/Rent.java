@@ -1,5 +1,6 @@
 package com.integraObra.integraobra_api_rest.models;
 
+import com.integraObra.integraobra_api_rest.utils.RentStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,6 +22,10 @@ public class Rent {
     @ManyToOne
     @JoinColumn(name = "client_id")
     private Client client; //Relacion con cliente, es decir una renta pertenece a un cliente (muchas rentas pueden pertenecer a un cliente)
+
+    @Enumerated(EnumType.STRING)
+    private RentStatus status;
+
     private LocalDateTime creationDate;
 
     @PrePersist
@@ -28,9 +33,10 @@ public class Rent {
         this.creationDate = LocalDateTime.now();
     }
 
-    //constructor solo con id del cliente
-    public Rent(Client client) {
+    //constructor solo con id del cliente y el status
+    public Rent(Client client, RentStatus status) {
         this.client = client;
+        this.status = status;
     }
 
 }

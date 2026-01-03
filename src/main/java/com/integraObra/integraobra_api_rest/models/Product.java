@@ -56,4 +56,16 @@ public class Product {
         this.priceVisibleForRent = priceVisibleForRent;
         this.priceVisibleForSale = priceVisibleForSale;
     }
+
+    //METODO PARA DESCONTAR STOCK AL PRODUCTO
+    public void decreaseStock(int quantity) {
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("La cantidad a descontar debe ser mayor que cero.");
+        }
+        if (this.stock < quantity) {
+            throw new IllegalArgumentException("No hay suficiente stock disponible para descontar la cantidad solicitada.");
+        }
+        this.stock -= quantity;
+    }
+
 }

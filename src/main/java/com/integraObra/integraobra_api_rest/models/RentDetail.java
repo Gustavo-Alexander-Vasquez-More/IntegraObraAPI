@@ -32,9 +32,6 @@ public class RentDetail {
     private BigDecimal discountRate;
     private BigDecimal totalPriceWithDiscount;
 
-    @Enumerated(EnumType.STRING)
-    private RentStatus status;
-
     private LocalDateTime createdAt;
 
     @PrePersist

@@ -1,5 +1,6 @@
 package com.integraObra.integraobra_api_rest.dto.products;
 
+import com.integraObra.integraobra_api_rest.models.Product;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,7 @@ import java.util.List;
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 public class ProductResponseDTO {
+    private Long id;
     private String name;
     private String cardImageUrl;
     private String sku;
@@ -24,8 +26,9 @@ public class ProductResponseDTO {
     private Boolean priceVisibleForSale;
 
 
-    public static ProductResponseDTO fromEntity(com.integraObra.integraobra_api_rest.models.Product product) {
+    public static ProductResponseDTO fromEntity(Product product) {
         ProductResponseDTO dto = new ProductResponseDTO();
+        dto.setId(product.getId());
         dto.setName(product.getName());
         dto.setCardImageUrl(product.getCardImageUrl());
         dto.setSku(product.getSku());

@@ -4,7 +4,6 @@ import com.integraObra.integraobra_api_rest.utils.RentStatus;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -23,4 +22,6 @@ public class CreateRentRequestDTO {
     @NotEmpty( message = " La lista de detalles de renta no puede estar vacía")
     @Valid
     private List<RentDetailItemDTO> rentDetails;
+    @Enumerated(EnumType.STRING)
+    private RentStatus status;
 }

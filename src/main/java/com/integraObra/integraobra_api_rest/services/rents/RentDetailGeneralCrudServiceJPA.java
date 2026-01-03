@@ -1,6 +1,5 @@
 package com.integraObra.integraobra_api_rest.services.rents;
 
-import com.integraObra.integraobra_api_rest.dto.rents.CreateRentRequestDTO;
 import com.integraObra.integraobra_api_rest.dto.rents.RentDetailItemDTO;
 import com.integraObra.integraobra_api_rest.exceptions.NotFoundException;
 import com.integraObra.integraobra_api_rest.models.Product;
@@ -9,6 +8,7 @@ import com.integraObra.integraobra_api_rest.models.RentDetail;
 import com.integraObra.integraobra_api_rest.repositories.ProductRepository;
 import com.integraObra.integraobra_api_rest.repositories.RentDetailRepository;
 import com.integraObra.integraobra_api_rest.repositories.RentRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -27,6 +27,7 @@ public class RentDetailGeneralCrudServiceJPA {
     }
 
     //METODO PARA CREAR UN DETALLE DE RENTA
+    @Transactional
     public List<RentDetail> createRentDetail(List<RentDetailItemDTO> rentDetailItemDTOS, Long rentId) {
         //Buscar la renta
         Rent rent = rentRepository.findById(rentId)
@@ -71,7 +72,9 @@ public class RentDetailGeneralCrudServiceJPA {
             rentDetail.setDaysRented(itemDTO.getDaysRented());
             rentDetail.setDiscountRate(discountRate);
             rentDetail.setTotalPriceWithDiscount(totalPriceWithDiscount);
-            rentDetail.setStatus(itemDTO.getStatus());
+
+            //Descontamos el stock a la entidad producto
+            product.decreaseStock(itemDTO.getQuantity());
 
             rentDetailRepository.save(rentDetail);
         }

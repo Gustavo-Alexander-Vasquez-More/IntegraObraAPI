@@ -21,6 +21,4 @@ public class RentDetailItemDTO {
     @NotNull(message = "Los días de renta no pueden ser nulos.")
     @Min(value = 1, message = "Los días de renta deben ser al menos 1.")
     private Integer daysRented;
-    @Enumerated(EnumType.STRING)
-    private RentStatus status;
 }

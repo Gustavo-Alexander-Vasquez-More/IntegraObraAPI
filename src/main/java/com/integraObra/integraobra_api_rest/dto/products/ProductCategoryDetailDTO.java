@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
-public class ProductCategoryDetailDTO {
+public class ProductCategoryDetailDTO { //Esto es para transferir datos de detalles de categoria de productos, es decir los subtipos de categorias
     private Long categoryDetailId;
     private String name;
     private Long categoryId;
