@@ -15,5 +15,7 @@ public class RentDetailResponseDTO {
     private Long id;
     private ProductRentItemDTO productRentItem;
     private BigDecimal discountRate;
+    private Integer daysRented;
+    private Integer quantity;
     private BigDecimal totalPriceWithDiscount;
 }

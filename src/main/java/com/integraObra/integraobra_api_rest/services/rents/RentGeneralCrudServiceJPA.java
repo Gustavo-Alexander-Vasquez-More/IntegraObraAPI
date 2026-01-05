@@ -56,6 +56,9 @@ public class RentGeneralCrudServiceJPA implements RentGeneralCrudService{
             rentDetailResponseDTO.setProductRentItem(rentDetail.getProductRentItem());
             rentDetailResponseDTO.setDiscountRate(rentDetail.getDiscountRate());
             rentDetailResponseDTO.setTotalPriceWithDiscount(rentDetail.getTotalPriceWithDiscount());
+            // Asegurar que también incluimos daysRented y quantity en la respuesta
+            rentDetailResponseDTO.setDaysRented(rentDetail.getDaysRented());
+            rentDetailResponseDTO.setQuantity(rentDetail.getQuantity());
             return rentDetailResponseDTO;
         }).toList());
         //calcular el precio total de la renta sumando los totales de cada detalle

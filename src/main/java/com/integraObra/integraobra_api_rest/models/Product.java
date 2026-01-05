@@ -1,5 +1,6 @@
 package com.integraObra.integraobra_api_rest.models;
 
+import com.integraObra.integraobra_api_rest.exceptions.NoStockException;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -63,7 +64,7 @@ public class Product {
             throw new IllegalArgumentException("La cantidad a descontar debe ser mayor que cero.");
         }
         if (this.stock < quantity) {
-            throw new IllegalArgumentException("No hay suficiente stock disponible para descontar la cantidad solicitada.");
+            throw new NoStockException("No hay suficiente stock en el producto " + this.name + "ID: " + this.id + " ,Intente agregar un producto con suficiente stock.");
         }
         this.stock -= quantity;
     }

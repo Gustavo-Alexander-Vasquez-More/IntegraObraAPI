@@ -48,6 +48,16 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 
+    // Manejo de excepciones por falta de stock
+    @ExceptionHandler(com.integraObra.integraobra_api_rest.exceptions.NoStockException.class)
+    public ResponseEntity<ErrorResponse> handleNoStockException(com.integraObra.integraobra_api_rest.exceptions.NoStockException ex) {
+        ErrorResponse response = new ErrorResponse();
+        response.setTitle(HttpStatus.CONFLICT.getReasonPhrase());
+        response.setMessage(ex.getMessage());
+        response.setStatus(HttpStatus.CONFLICT.value());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
     //Manejo de excepciones generales (genericos)
     @ExceptionHandler(InternalErrorException.class)
     public ResponseEntity<ErrorResponse> handleGeneralException(InternalErrorException ex) {

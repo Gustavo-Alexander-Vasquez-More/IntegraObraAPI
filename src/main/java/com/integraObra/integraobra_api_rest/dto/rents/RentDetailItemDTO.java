@@ -2,6 +2,7 @@ package com.integraObra.integraobra_api_rest.dto.rents;
 
 import com.integraObra.integraobra_api_rest.dto.products.ProductRentItemDTO;
 import com.integraObra.integraobra_api_rest.utils.RentStatus;
+import com.fasterxml.jackson.annotation.JsonAlias;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Min;
@@ -15,8 +16,9 @@ import lombok.Setter;
 @NoArgsConstructor @AllArgsConstructor
 // DTO para representar un ítem de detalle de renta en una solicitud de creación de renta
 public class RentDetailItemDTO {
+    @JsonAlias({"productId", "idProduct"})
     @NotNull(message = "El ID del producto no puede ser nulo.")
-    private ProductRentItemDTO productRentItem;
+    private Long idProduct;
     @NotNull(message = "La cantidad no puede ser nula.")
     @Min(value = 1, message = "La cantidad debe ser al menos 1.")
     private Integer quantity;

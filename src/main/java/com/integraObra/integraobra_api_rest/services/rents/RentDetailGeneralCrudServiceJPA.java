@@ -37,17 +37,24 @@ public class RentDetailGeneralCrudServiceJPA {
         //RECORREMOS CADA ITEM DTO PARA CREAR EL DETALLE DE RENTA EN EL BUCLE
         for (RentDetailItemDTO itemDTO : rentDetailItemDTOS) {
             //BUSCAMOS EL PRODUCTO ITERADO PARA EVITAR INCONSISTENCIAS
-            Product product = productRepository.findById(itemDTO.getProductRentItem().getId())
-                    .orElseThrow(() -> new NotFoundException("Producto con ID " + itemDTO.getProductRentItem().getId() + " no encontrado."));
+            Product product = productRepository.findById(itemDTO.getIdProduct())
+                    .orElseThrow(() -> new NotFoundException("Producto con ID " + itemDTO.getIdProduct() + " no encontrado."));
 
             //LOGICA PARA OBTENER LA TASA DE DESCUENTO SEGUN LOS DIAS DE RENTA
             BigDecimal discountRate;
             BigDecimal totalPriceWithDiscount;
 
-            if (itemDTO.getDaysRented() >= 30) {
+            // Evaluar de mayor a menor umbral para evitar que un caso menor capture los mayores
+            if (itemDTO.getDaysRented() >= 32) {
+                discountRate = new BigDecimal("0.30"); //30% de descuento
+            } else if (itemDTO.getDaysRented() >= 12) {
                 discountRate = new BigDecimal("0.20"); //20% de descuento
-            } else if (itemDTO.getDaysRented() >= 15) {
+            } else if (itemDTO.getDaysRented() >= 9) {
+                discountRate = new BigDecimal("0.15"); //15% de descuento
+            } else if (itemDTO.getDaysRented() >= 6) {
                 discountRate = new BigDecimal("0.10"); //10% de descuento
+            } else if (itemDTO.getDaysRented() >= 3) {
+                discountRate = new BigDecimal("0.05"); //5% de descuento
             } else {
                 discountRate = BigDecimal.ZERO; //Sin descuento
             }
@@ -87,6 +94,8 @@ public class RentDetailGeneralCrudServiceJPA {
                     product.getRentPrice()
             ));
             rentDetailResponseDTO.setDiscountRate(rentDetail.getDiscountRate());
+            rentDetailResponseDTO.setDaysRented(rentDetail.getDaysRented());
+            rentDetailResponseDTO.setQuantity(rentDetail.getQuantity());
             rentDetailResponseDTO.setTotalPriceWithDiscount(rentDetail.getTotalPriceWithDiscount());
             return rentDetailResponseDTO;
         }).toList();
