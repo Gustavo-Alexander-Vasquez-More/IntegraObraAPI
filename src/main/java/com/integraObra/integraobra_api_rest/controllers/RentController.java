@@ -1,7 +1,7 @@
 package com.integraObra.integraobra_api_rest.controllers;
 
 import com.integraObra.integraobra_api_rest.dto.rents.CreateRentRequestDTO;
-import com.integraObra.integraobra_api_rest.models.Rent;
+import com.integraObra.integraobra_api_rest.dto.rents.RentResponseDTO;
 import com.integraObra.integraobra_api_rest.services.rents.RentGeneralCrudServiceJPA;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +20,7 @@ public class RentController {
     }
 
     @PostMapping
-    public ResponseEntity<Rent> createRent(@Valid @RequestBody CreateRentRequestDTO createRentRequestDTO) {
+    public ResponseEntity<RentResponseDTO> createRent(@Valid @RequestBody CreateRentRequestDTO createRentRequestDTO) {
        return ResponseEntity.ok(rentGeneralCrudServiceJPA.createRentForClient(createRentRequestDTO));
     }
 

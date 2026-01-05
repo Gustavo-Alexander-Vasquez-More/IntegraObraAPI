@@ -1,6 +1,7 @@
 package com.integraObra.integraobra_api_rest.services.rents;
 
 import com.integraObra.integraobra_api_rest.dto.rents.RentDetailItemDTO;
+import com.integraObra.integraobra_api_rest.dto.rents.RentDetailResponseDTO;
 import com.integraObra.integraobra_api_rest.exceptions.NotFoundException;
 import com.integraObra.integraobra_api_rest.models.Product;
 import com.integraObra.integraobra_api_rest.models.Rent;
@@ -28,18 +29,18 @@ public class RentDetailGeneralCrudServiceJPA {
 
     //METODO PARA CREAR UN DETALLE DE RENTA
     @Transactional
-    public List<RentDetail> createRentDetail(List<RentDetailItemDTO> rentDetailItemDTOS, Long rentId) {
-        //Buscar la renta
+    public List<RentDetailResponseDTO> createRentDetail(List<RentDetailItemDTO> rentDetailItemDTOS, Long rentId) {
+        //BUSCAMOS LA RENTA PARA ASOCIAR EL DETALLE
         Rent rent = rentRepository.findById(rentId)
                 .orElseThrow(() -> new NotFoundException("Renta con ID " + rentId + " no encontrada."));
 
-        //Recorrer los items del detalle de la renta
+        //RECORREMOS CADA ITEM DTO PARA CREAR EL DETALLE DE RENTA EN EL BUCLE
         for (RentDetailItemDTO itemDTO : rentDetailItemDTOS) {
-            //Buscar el producto
-            Product product = productRepository.findById(itemDTO.getProductId())
-                    .orElseThrow(() -> new NotFoundException("Producto con ID " + itemDTO.getProductId() + " no encontrado."));
+            //BUSCAMOS EL PRODUCTO ITERADO PARA EVITAR INCONSISTENCIAS
+            Product product = productRepository.findById(itemDTO.getProductRentItem().getId())
+                    .orElseThrow(() -> new NotFoundException("Producto con ID " + itemDTO.getProductRentItem().getId() + " no encontrado."));
 
-            //Logica para el descuento segun la cantidad y dias rentados se implementaria aqui
+            //LOGICA PARA OBTENER LA TASA DE DESCUENTO SEGUN LOS DIAS DE RENTA
             BigDecimal discountRate;
             BigDecimal totalPriceWithDiscount;
 
@@ -51,20 +52,16 @@ public class RentDetailGeneralCrudServiceJPA {
                 discountRate = BigDecimal.ZERO; //Sin descuento
             }
 
-            //Calcular el total del precio con el descuento
+            //CALCULAMOS EL PRECIO TOTAL CON DESCUENTO DE CADA ITEM(Producto)
             BigDecimal rentPrice = product.getRentPrice();
             BigDecimal quantity = new BigDecimal(itemDTO.getQuantity());
             BigDecimal days = new BigDecimal(itemDTO.getDaysRented());
-
-            // Subtotal = rentPrice * quantity * days
             BigDecimal subtotal = rentPrice.multiply(quantity).multiply(days);
-
-            // Descuento = subtotal * discountRate
             BigDecimal discount = subtotal.multiply(discountRate);
-
             // Total con descuento = subtotal - descuento
             totalPriceWithDiscount = subtotal.subtract(discount);
 
+            //ARMAMOS EL DETALLE DE RENTA
             RentDetail rentDetail = new RentDetail();
             rentDetail.setRent(rent);
             rentDetail.setProduct(product);
@@ -72,13 +69,26 @@ public class RentDetailGeneralCrudServiceJPA {
             rentDetail.setDaysRented(itemDTO.getDaysRented());
             rentDetail.setDiscountRate(discountRate);
             rentDetail.setTotalPriceWithDiscount(totalPriceWithDiscount);
-
-            //Descontamos el stock a la entidad producto
+            //COMO PASO FINAL DISMINUIMOS EL STOCK DEL PRODUCTO PARA REFLEJAR LA RENTA
             product.decreaseStock(itemDTO.getQuantity());
 
             rentDetailRepository.save(rentDetail);
         }
-        //retorna la lista de todos los detalles guardados
-        return rentDetailRepository.findByRentId(rentId);
+        //RETORNAMOS LA LISTA DE DETALLES DE RENTA CREADOS
+        return rentDetailRepository.findByRentId(rentId).stream().map(rentDetail -> {
+            RentDetailResponseDTO rentDetailResponseDTO = new RentDetailResponseDTO();
+            rentDetailResponseDTO.setId(rentDetail.getId());
+            //ASIGNAMOS EL PRODUCTO COMO ProductRentItemDTO
+            Product product = rentDetail.getProduct();
+            rentDetailResponseDTO.setProductRentItem(new com.integraObra.integraobra_api_rest.dto.products.ProductRentItemDTO(
+                    product.getId(),
+                    product.getName(),
+                    product.getSku(),
+                    product.getRentPrice()
+            ));
+            rentDetailResponseDTO.setDiscountRate(rentDetail.getDiscountRate());
+            rentDetailResponseDTO.setTotalPriceWithDiscount(rentDetail.getTotalPriceWithDiscount());
+            return rentDetailResponseDTO;
+        }).toList();
     }
 }

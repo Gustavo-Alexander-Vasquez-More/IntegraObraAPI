@@ -1,5 +1,6 @@
 package com.integraObra.integraobra_api_rest.dto.rents;
 
+import com.integraObra.integraobra_api_rest.dto.products.ProductRentItemDTO;
 import com.integraObra.integraobra_api_rest.utils.RentStatus;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -12,9 +13,10 @@ import lombok.Setter;
 
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
+// DTO para representar un ítem de detalle de renta en una solicitud de creación de renta
 public class RentDetailItemDTO {
     @NotNull(message = "El ID del producto no puede ser nulo.")
-    private Long productId;
+    private ProductRentItemDTO productRentItem;
     @NotNull(message = "La cantidad no puede ser nula.")
     @Min(value = 1, message = "La cantidad debe ser al menos 1.")
     private Integer quantity;
