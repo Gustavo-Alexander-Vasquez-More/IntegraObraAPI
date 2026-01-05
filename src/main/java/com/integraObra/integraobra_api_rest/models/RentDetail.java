@@ -18,7 +18,6 @@ public class RentDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @ManyToOne
     @JoinColumn(name = "rent_id", nullable = false)
     private Rent rent; //Una renta puede tener muchos detalles de renta

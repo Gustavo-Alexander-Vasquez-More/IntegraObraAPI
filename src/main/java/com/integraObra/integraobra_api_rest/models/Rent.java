@@ -18,7 +18,7 @@ public class Rent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    private Long numberRent; //Numero de renta unico y secuencial
     @ManyToOne
     @JoinColumn(name = "client_id")
     private Client client; //Relacion con cliente, es decir una renta pertenece a un cliente (muchas rentas pueden pertenecer a un cliente)

@@ -16,6 +16,7 @@ import java.util.List;
 //DTO para devolver la información de una renta completa
 public class RentResponseDTO {
     private Long id;
+    private Long numberRent;
     private Client client;
     private List<RentDetailResponseDTO> rentDetails;
     private BigDecimal totalPrice;
