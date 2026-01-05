@@ -100,4 +100,25 @@ public class RentDetailGeneralCrudServiceJPA {
             return rentDetailResponseDTO;
         }).toList();
     }
+
+    //getRentDetailsByRentId
+    public List<RentDetailResponseDTO> getRentDetailsByRentId(Long rentId) {
+        return rentDetailRepository.findByRentId(rentId).stream().map(rentDetail -> {
+            RentDetailResponseDTO rentDetailResponseDTO = new RentDetailResponseDTO();
+            rentDetailResponseDTO.setId(rentDetail.getId());
+            //ASIGNAMOS EL PRODUCTO COMO ProductRentItemDTO
+            Product product = rentDetail.getProduct();
+            rentDetailResponseDTO.setProductRentItem(new com.integraObra.integraobra_api_rest.dto.products.ProductRentItemDTO(
+                    product.getId(),
+                    product.getName(),
+                    product.getSku(),
+                    product.getRentPrice()
+            ));
+            rentDetailResponseDTO.setDiscountRate(rentDetail.getDiscountRate());
+            rentDetailResponseDTO.setDaysRented(rentDetail.getDaysRented());
+            rentDetailResponseDTO.setQuantity(rentDetail.getQuantity());
+            rentDetailResponseDTO.setTotalPriceWithDiscount(rentDetail.getTotalPriceWithDiscount());
+            return rentDetailResponseDTO;
+        }).toList();
+    }
 }

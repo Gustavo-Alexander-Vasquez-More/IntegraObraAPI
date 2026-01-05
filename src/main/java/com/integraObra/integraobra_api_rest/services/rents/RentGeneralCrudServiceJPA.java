@@ -67,7 +67,7 @@ public class RentGeneralCrudServiceJPA implements RentGeneralCrudService{
         return rentResponseDTO;
     }
 
-    //Crear una renta para el cliente
+    //SERVICIO PARA CREACION DE RENTA PARA UN CLIENTE EN ESPECIFICO
     @Transactional // Si falla algo, se hace rollback automático de TODO
     public RentResponseDTO createRentForClient(CreateRentRequestDTO createRentRequestDTO) {
         // 1. Buscar el cliente (si no existe, lanza NotFoundException)
@@ -84,4 +84,5 @@ public class RentGeneralCrudServiceJPA implements RentGeneralCrudService{
         //Creamos la respuesta completa
         return createRentResponseDTO(savedRent, detalleRenta);
     }
+
 }
